@@ -1,10 +1,10 @@
 package com.zinoviev.data.handler;
 
-import com.zinoviev.data.controller.out.DBResponseController;
-import com.zinoviev.data.entity.RequestStatus;
+import com.zinoviev.data.controller.DBResponseController;
 import com.zinoviev.data.service.UserRepositoryService;
-import com.zinoviev.data.service.entity.UpdateData;
-import com.zinoviev.data.service.entity.UserData;
+import com.zinoviev.entity.enums.RequestStatus;
+import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.model.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

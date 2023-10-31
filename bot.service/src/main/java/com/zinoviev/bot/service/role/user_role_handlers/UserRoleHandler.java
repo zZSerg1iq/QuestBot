@@ -1,11 +1,10 @@
 package com.zinoviev.bot.service.role.user_role_handlers;
 
-import com.zinoviev.bot.controller.update.TelegramController;
+import com.zinoviev.bot.controller.TelegramController;
 import com.zinoviev.bot.entity.rest.UpdateData;
 import com.zinoviev.bot.service.role.user_role_handlers.sub.AccountMenuHandler;
 import com.zinoviev.bot.service.role.user_role_handlers.sub.HelpMenuHandler;
 import com.zinoviev.bot.service.role.user_role_handlers.sub.QuestMenuHandler;
-import com.zinoviev.bot.support.CryptoTool;
 import com.zinoviev.bot.support.DefaultBotMessages;
 import com.zinoviev.bot.support.MessageTemplates;
 import com.zinoviev.bot.support.RoleReplyKeyboardMarkupMenuTemplates;

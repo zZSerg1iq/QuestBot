@@ -1,7 +1,7 @@
 package com.zinoviev.data.service;
 
-import com.zinoviev.data.service.entity.UpdateData;
-import com.zinoviev.data.service.entity.UserData;
+import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.model.UserData;
 
 
 public interface UserRepositoryService {

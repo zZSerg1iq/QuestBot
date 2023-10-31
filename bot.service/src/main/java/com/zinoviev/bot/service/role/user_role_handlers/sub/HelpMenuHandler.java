@@ -1,6 +1,6 @@
 package com.zinoviev.bot.service.role.user_role_handlers.sub;
 
-import com.zinoviev.bot.controller.update.TelegramController;
+import com.zinoviev.bot.controller.TelegramController;
 import com.zinoviev.bot.entity.rest.UpdateData;
 import com.zinoviev.bot.support.DefaultBotMessages;
 import com.zinoviev.bot.support.MessageTemplates;

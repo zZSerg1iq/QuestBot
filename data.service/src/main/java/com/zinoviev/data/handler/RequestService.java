@@ -1,6 +1,6 @@
 package com.zinoviev.data.handler;
 
-import com.zinoviev.data.service.entity.UpdateData;
+import com.zinoviev.entity.model.UpdateData;
 
 
 public interface RequestService {

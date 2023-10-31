@@ -1,6 +1,6 @@
 package com.zinoviev.data.repository;
 
-import com.zinoviev.data.entity.User;
+import com.zinoviev.entity.data.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,11 +1,14 @@
 package com.zinoviev.bot.service;
 
-import com.zinoviev.bot.controller.update.TelegramController;
+import com.zinoviev.bot.controller.TelegramController;
 import com.zinoviev.bot.entity.RequestStatus;
 import com.zinoviev.bot.entity.SignInStatus;
 import com.zinoviev.bot.entity.rest.UpdateData;
 import com.zinoviev.bot.support.DefaultBotMessages;
 import com.zinoviev.bot.support.RoleReplyKeyboardMarkupMenuTemplates;
+import com.zinoviev.entity.enums.RequestStatus;
+import com.zinoviev.entity.enums.SignInStatus;
+import com.zinoviev.entity.model.UpdateData;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;

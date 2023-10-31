@@ -1,6 +1,6 @@
 package com.zinoviev.bot.handler.threadhandler;
 
-import com.zinoviev.bot.controller.update.SimpleTelegramController;
+import com.zinoviev.bot.controller.impl.SimpleTelegramController;
 import com.zinoviev.bot.entity.rest.UpdateData;
 import com.zinoviev.bot.handler.ResponseHandler;
 import org.springframework.stereotype.Component;

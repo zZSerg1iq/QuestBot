@@ -13,11 +13,8 @@ import lombok.Setter;
 public class Location {
 
     private Double longitude;
-
     private Double latitude;
-
     private Integer heading;
-
     private Integer proximityAlertRadius;
 
 }

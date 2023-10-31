@@ -5,7 +5,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>entity</module>
-        <module>entity</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -1,13 +1,13 @@
 package com.zinoviev.data.service.impl;
 
 
-import com.zinoviev.data.entity.Role;
-import com.zinoviev.data.entity.SignInStatus;
-import com.zinoviev.data.entity.User;
 import com.zinoviev.data.repository.UserRepository;
 import com.zinoviev.data.service.UserRepositoryService;
-import com.zinoviev.data.service.entity.UpdateData;
-import com.zinoviev.data.service.entity.UserData;
+import com.zinoviev.entity.data.User;
+import com.zinoviev.entity.enums.Role;
+import com.zinoviev.entity.enums.SignInStatus;
+import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.model.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
 
     @Override
     public UserData getUserDataByTelegramId(UpdateData updateData) {
-        User user = userRepository.getUserByTelegramId(updateData.getUserId());
+        User user = userRepository.getUserByTelegramId(updateData.getUser`Id());
         UserData userData;
 
         if (user == null) {
