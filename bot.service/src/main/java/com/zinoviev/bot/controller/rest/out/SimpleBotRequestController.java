@@ -1,6 +1,6 @@
 package com.zinoviev.bot.controller.rest.out;
 
-import com.zinoviev.bot.entity.rest.UpdateData;
+import com.zinoviev.entity.model.UpdateData;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;

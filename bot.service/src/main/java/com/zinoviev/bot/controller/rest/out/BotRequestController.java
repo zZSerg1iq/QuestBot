@@ -1,6 +1,6 @@
 package com.zinoviev.bot.controller.rest.out;
 
-import com.zinoviev.bot.entity.rest.UpdateData;
+import com.zinoviev.entity.model.UpdateData;
 
 public interface BotRequestController {
 

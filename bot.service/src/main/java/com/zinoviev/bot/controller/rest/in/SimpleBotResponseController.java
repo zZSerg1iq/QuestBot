@@ -1,7 +1,7 @@
 package com.zinoviev.bot.controller.rest.in;
 
-import com.zinoviev.bot.entity.rest.UpdateData;
 import com.zinoviev.bot.handler.ResponseHandler;
+import com.zinoviev.entity.model.UpdateData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

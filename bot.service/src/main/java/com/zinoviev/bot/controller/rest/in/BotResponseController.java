@@ -1,6 +1,6 @@
 package com.zinoviev.bot.controller.rest.in;
 
-import com.zinoviev.bot.entity.rest.UpdateData;
+import com.zinoviev.entity.model.UpdateData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
