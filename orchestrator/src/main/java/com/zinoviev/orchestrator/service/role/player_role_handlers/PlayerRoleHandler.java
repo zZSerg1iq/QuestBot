@@ -1,6 +1,6 @@
 package com.zinoviev.orchestrator.service.role.player_role_handlers;
 
-import com.zinoviev.bot.entity.rest.UpdateData;
+import com.zinoviev.entity.model.UpdateData;
 import lombok.Data;
 
 

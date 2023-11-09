@@ -1,4 +1,4 @@
-package com.zinoviev.bot.support;
+package com.zinoviev.entity.enums;
 
 
 public enum DefaultBotMessages {

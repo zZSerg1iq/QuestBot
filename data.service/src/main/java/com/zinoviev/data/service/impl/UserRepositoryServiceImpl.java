@@ -23,17 +23,17 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
 
     @Override
     public UserData getUserDataByTelegramId(UpdateData updateData) {
-        User user = userRepository.getUserByTelegramId(updateData.getUser`Id());
+        User user = userRepository.getUserByTelegramId(updateData.getMessage().getUserId());
         UserData userData;
 
         if (user == null) {
             user = new User();
             user.setRole(Role.USER);
             user.setSignInStatus(SignInStatus.SIGN_IN_NONE);
-            user.setTelegramId(updateData.getUserId());
-            user.setUserName(updateData.getUserName());
-            user.setFirstName(updateData.getFirstName());
-            user.setLastName(updateData.getLastName());
+            user.setTelegramId(updateData.getMessage().getUserId());
+            user.setUserName(updateData.getMessage().getUserName());
+            user.setFirstName(updateData.getMessage().getFirstName());
+            user.setLastName(updateData.getMessage().getLastName());
 
             user = userRepository.save(user);
         }
@@ -52,9 +52,6 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
     @Override
     public void saveUser(UserData userData) {
         User user = userRepository.findById(userData.getId()).orElseGet(User::new);
-        System.out.println("--------------------------");
-        System.out.println(userData.getUserName());
-        System.out.println("--------------------------");
 
         user.setUserName(userData.getUserName());
         user.setFirstName(userData.getFirstName());

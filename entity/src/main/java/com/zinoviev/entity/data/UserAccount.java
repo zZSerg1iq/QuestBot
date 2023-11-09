@@ -1,5 +1,6 @@
 package com.zinoviev.entity.data;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity

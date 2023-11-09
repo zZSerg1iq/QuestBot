@@ -1,14 +1,8 @@
 package com.zinoviev.orchestrator.service.role.user_role_handlers;
 
-import com.zinoviev.bot.controller.update.TelegramController;
-import com.zinoviev.bot.entity.rest.UpdateData;
-import com.zinoviev.bot.service.role.user_role_handlers.sub.AccountMenuHandler;
-import com.zinoviev.bot.service.role.user_role_handlers.sub.HelpMenuHandler;
-import com.zinoviev.bot.service.role.user_role_handlers.sub.QuestMenuHandler;
-import com.zinoviev.bot.support.CryptoTool;
-import com.zinoviev.bot.support.DefaultBotMessages;
-import com.zinoviev.bot.support.MessageTemplates;
-import com.zinoviev.bot.support.RoleReplyKeyboardMarkupMenuTemplates;
+
+import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.orchestrator.support.CryptoTool;
 import lombok.Data;
 
 
@@ -22,29 +16,27 @@ public class UserRoleHandler {
 
 
     private final CryptoTool cryptoTool;
-    private final TelegramController telegramController;
 
     private String username;
 
 
-    public UserRoleHandler(TelegramController telegramController) {
+    public UserRoleHandler() {
         cryptoTool = new CryptoTool(invitelink);
-        this.telegramController = telegramController;
     }
 
 
     public void actionHandler(UpdateData updateData) {
-        username = updateData.getUserData().getAvatarName() != null ? updateData.getUserData().getAvatarName() : updateData.getFirstName();
+      /*  username = updateData.getUserData().getAvatarName() != null ? updateData.getUserData().getAvatarName() : updateData.getFirstName();
 
         if (updateData.getCallbackQueryData() != null) {
             userCallBackQueryAction(updateData);
         } else {
             userMessageAction(updateData);
-        }
+        }*/
     }
 
     private void userMessageAction(UpdateData updateData) {
-        if (updateData.getText().equalsIgnoreCase("квесты")) {
+       /* if (updateData.getText().equalsIgnoreCase("квесты")) {
             new QuestMenuHandler(updateData, telegramController).showQuestMenu();
 
         } else if (updateData.getText().equalsIgnoreCase("аккаунт")) {
@@ -60,12 +52,12 @@ public class UserRoleHandler {
             telegramController.sendMessage(MessageTemplates.getSendMessageTemplate(updateData.getUserId(), username + DefaultBotMessages.TEXT_COMMAND_FIRST_ERROR_MESSAGE.getMessage()));
             telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.removeKeyboard(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage()));
             telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.getUserReplyKeyboardMarkupMenuMessage(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_THIRD_MESSAGE.getMessage()));
-        }
+        }*/
     }
 
 
     private void userCallBackQueryAction(UpdateData updateData) {
-        if (updateData.getCallbackQueryData().contains("QUEST")) {
+        /*if (updateData.getCallbackQueryData().contains("QUEST")) {
             new QuestMenuHandler(updateData, telegramController).questMenuCallback();
         } else if (updateData.getCallbackQueryData().contains("ACCOUNT")) {
             new AccountMenuHandler(updateData, telegramController).accountMenuCallback();
@@ -73,7 +65,7 @@ public class UserRoleHandler {
             new HelpMenuHandler(updateData, telegramController).helpMenuCallback();
         } else if (updateData.getCallbackQueryData().contains("CANCEL")) {
             menuCancel(updateData);
-        }
+        }*/
     }
 
 
@@ -93,7 +85,7 @@ public class UserRoleHandler {
 
 
     private void menuCancel(UpdateData updateData) {
-        telegramController.sendMessage(MessageTemplates.getMenuCancelActionTemplate(updateData));
+      //  telegramController.sendMessage(MessageTemplates.getMenuCancelActionTemplate(updateData));
     }
 
 

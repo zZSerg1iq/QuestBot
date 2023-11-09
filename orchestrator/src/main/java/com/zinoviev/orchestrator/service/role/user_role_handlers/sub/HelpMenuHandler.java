@@ -1,10 +1,7 @@
 package com.zinoviev.orchestrator.service.role.user_role_handlers.sub;
 
-import com.zinoviev.bot.controller.update.TelegramController;
-import com.zinoviev.bot.entity.rest.UpdateData;
-import com.zinoviev.bot.support.DefaultBotMessages;
-import com.zinoviev.bot.support.MessageTemplates;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import com.zinoviev.entity.model.UpdateData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +16,13 @@ public class HelpMenuHandler {
 
     private final UpdateData updateData;
 
-    private final TelegramController telegramController;
 
-    public HelpMenuHandler(UpdateData updateData, TelegramController telegramController) {
+    public HelpMenuHandler(UpdateData updateData) {
         this.updateData = updateData;
-        this.telegramController = telegramController;
     }
 
     public void showHelpMenu() {
-        List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
+    /*    List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
         List<InlineKeyboardButton> buttons = new ArrayList<>();
         buttons.add(InlineKeyboardButton.builder().text("Как создавать квесты").callbackData(CREATION).build());
         buttonRows.add(buttons);
@@ -48,11 +43,11 @@ public class HelpMenuHandler {
         telegramController.sendMessage(
                 MessageTemplates.getInlineKeyboardSendMessageTemplate(
                         updateData.getUserId(), buttonRows, DefaultBotMessages.USER_HELP_MESSAGE.getMessage()
-                ));
+                ));*/
     }
 
     public void helpMenuCallback() {
-        switch (updateData.getCallbackQueryData()) {
+        switch (updateData.getMessage().getCallbackData()) {
             case CREATION -> {
             }
             case EDITING -> {

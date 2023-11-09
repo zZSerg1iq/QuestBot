@@ -1,7 +1,7 @@
 package com.zinoviev.bot.controller.impl;
 
 import com.zinoviev.bot.config.Config;
-import com.zinoviev.bot.controller.BotRequestController;
+import com.zinoviev.bot.controller.BotDataController;
 import com.zinoviev.bot.controller.TelegramController;
 import com.zinoviev.bot.mapper.UpdateDataMapper;
 import com.zinoviev.entity.model.UpdateData;
@@ -27,21 +27,23 @@ public class SimpleTelegramController extends TelegramLongPollingBot implements 
 
     private final UpdateDataMapper updateDataMapper;
 
-    private final BotRequestController requestController;
+    private BotDataController botDataController;
+
 
     @Autowired
-    public SimpleTelegramController(Config config, UpdateDataMapper updateDataMapper, BotRequestController requestController) throws TelegramApiException {
+    public SimpleTelegramController(Config config, UpdateDataMapper updateDataMapper) throws TelegramApiException {
+        super(config.getBOT_TOKEN());
+
         this.config = config;
         this.updateDataMapper = updateDataMapper;
-        this.requestController = requestController;
 
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(this);
     }
 
     @Override
-    public String getBotToken() {
-        return config.getBOT_TOKEN();
+    public void setBotDataController(BotDataController botDataController) {
+        this.botDataController = botDataController;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class SimpleTelegramController extends TelegramLongPollingBot implements 
     @Override
     public void onUpdateReceived(Update update) {
         UpdateData updateData = updateDataMapper.mapUpdateToUpdateData(update);
-        requestController.sendUpdateDataToOrchestrator(updateData);
+        botDataController.sendUpdateDataToDB(updateData);
 
         // log.debug(update.getMessage());
     }

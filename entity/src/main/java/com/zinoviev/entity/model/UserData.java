@@ -1,6 +1,5 @@
 package com.zinoviev.entity.model;
 
-import com.zinoviev.entity.data.Statistics;
 import com.zinoviev.entity.data.User;
 import com.zinoviev.entity.enums.Role;
 import com.zinoviev.entity.enums.SignInStatus;
@@ -30,9 +29,6 @@ public class UserData {
     private Role role;
 
     private SignInStatus signInStatus;
-
-
-    private Statistics statistics;
 
     public UserData(User user) {
         id = user.getId();

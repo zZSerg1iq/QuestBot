@@ -2,6 +2,7 @@ package com.zinoviev.entity.data;
 
 import com.zinoviev.entity.enums.Role;
 import com.zinoviev.entity.enums.SignInStatus;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -34,7 +35,5 @@ public class User {
     @Column(name = "sign_in_status")
     private SignInStatus signInStatus;
 
-    @OneToOne(mappedBy = "user")
-    private Statistics statistics;
 
 }

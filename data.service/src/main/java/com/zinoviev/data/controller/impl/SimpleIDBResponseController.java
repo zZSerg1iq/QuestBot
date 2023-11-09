@@ -1,9 +1,8 @@
 package com.zinoviev.data.controller.impl;
 
 import com.zinoviev.data.controller.DBResponseController;
-import com.zinoviev.data.handler.RequestService;
+import com.zinoviev.data.handler.RequestHandlerService;
 import com.zinoviev.entity.model.UpdateData;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,20 +12,22 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("api/data")
-public class
-SimpleIDBResponseController implements DBResponseController {
+public class SimpleIDBResponseController implements DBResponseController {
 
-    private final RequestService requestService;
+    private String orchestratorLink = "http://localhost:24004/api/orch/db/new/response";
 
-    @Autowired
-    public SimpleIDBResponseController(RequestService requestService) {
-        this.requestService = requestService;
+    private RequestHandlerService requestHandlerService;
+
+    @Override
+    public void setRequestService(RequestHandlerService requestHandlerService) {
+        this.requestHandlerService = requestHandlerService;
     }
 
+
     @PostMapping("/userdata")
-    public ResponseEntity<String> userData(@RequestBody UpdateData updateData) {
-        requestService.processTheRequest(updateData);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public String userData(@RequestBody UpdateData updateData) {
+        requestHandlerService.processTheRequest(updateData);
+        return "OK";
     }
 
 
@@ -35,8 +36,8 @@ SimpleIDBResponseController implements DBResponseController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<UpdateData> responseEntity = new RestTemplate().exchange(
-                "http://localhost:24001/api/bot/userdata",
+        new RestTemplate().exchange(
+                orchestratorLink,
                 HttpMethod.POST,
                 new HttpEntity<>(updateData, headers),
                 UpdateData.class

@@ -16,4 +16,5 @@ public class Config {
     @Value("${bot.token}")
     private String BOT_TOKEN;
 
+
 }

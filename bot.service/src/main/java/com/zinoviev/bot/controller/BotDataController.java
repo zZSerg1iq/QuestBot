@@ -4,12 +4,15 @@ import com.zinoviev.entity.model.UpdateData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-public interface BotRequestController {
 
-    void sendUpdateDataToOrchestrator(UpdateData updateData);
+public interface BotDataController {
 
-    @PostMapping("/orchrsp")
+    void sendUpdateDataToDB(UpdateData updateData);
+
+
     ResponseEntity<String> orchestratorResponse(@RequestBody UpdateData updateData);
 
 }

@@ -1,7 +1,7 @@
 package com.zinoviev.entity.model.updatedata.entity;
 
+import com.zinoviev.entity.enums.MessageType;
 import lombok.Data;
-
 import java.util.List;
 
 @Data
@@ -14,12 +14,14 @@ public class Message {
     private String userName;
 
     //chat
-    private Integer messageId;//TODO не одинаковые ли они
+    private Integer messageId;
     private Long chatId;
     private String text;
 
     private String callbackData;
-    private Integer callbackMessageId; //TODO не одинаковые ли они
+    private Integer callbackMessageId;
 
+    private MessageType messageType;
+    private ReplyKeyboardType keyboardType;
     private List<List<InlineButton>> buttons;
 }

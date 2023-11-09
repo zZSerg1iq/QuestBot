@@ -3,6 +3,7 @@ package com.zinoviev.bot.mapper;
 import com.zinoviev.entity.model.UpdateData;
 import com.zinoviev.entity.model.updatedata.entity.Document;
 import com.zinoviev.entity.model.updatedata.entity.Location;
+import com.zinoviev.entity.model.updatedata.entity.Message;
 import com.zinoviev.entity.model.updatedata.entity.Photo;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
@@ -16,6 +17,7 @@ public class UpdateDataMapper {
 
     public UpdateData mapUpdateToUpdateData(Update update) {
         UpdateData updateData = new UpdateData();
+        updateData.setMessage(new Message());
         updateData.setUpdateId(update.getUpdateId());
 
         if (update.hasMessage()) {
@@ -46,26 +48,28 @@ public class UpdateDataMapper {
     }
 
     private void setUpdateDataCallbackQueryInfo(UpdateData updateData, Update update) {
-        updateData.setCallbackQueryData(update.getCallbackQuery().getData());
-        updateData.setCallbackQueryMessageId(update.getCallbackQuery().getMessage().getMessageId());
-        updateData.setChatId(update.getCallbackQuery().getMessage().getChatId());
-        updateData.setUserId(update.getCallbackQuery().getFrom().getId());
+        updateData.setDate(update.getCallbackQuery().getMessage().getDate());
 
-        updateData.setUserName(update.getCallbackQuery().getFrom().getUserName());
-        updateData.setLastName(update.getCallbackQuery().getFrom().getLastName());
-        updateData.setFirstName(update.getCallbackQuery().getFrom().getFirstName());
+        updateData.getMessage().setCallbackData(update.getCallbackQuery().getData());
+        updateData.getMessage().setCallbackMessageId(update.getCallbackQuery().getMessage().getMessageId());
+        updateData.getMessage().setChatId(update.getCallbackQuery().getMessage().getChatId());
+
+        updateData.getMessage().setUserId(update.getCallbackQuery().getFrom().getId());
+        updateData.getMessage().setFirstName(update.getCallbackQuery().getFrom().getFirstName());
     }
 
     private void setUpdateDataMessageInfo(UpdateData updateData, Update update) {
-        updateData.setMessageId(update.getMessage().getMessageId());
-
-        updateData.setUserId(update.getMessage().getFrom().getId());
-        updateData.setFirstName(update.getMessage().getFrom().getFirstName());
-        updateData.setLastName(update.getMessage().getFrom().getLastName());
-        updateData.setUserName(update.getMessage().getFrom().getUserName());
         updateData.setDate(update.getMessage().getDate());
-        updateData.setChatId(update.getMessage().getChatId());
-        updateData.setText(update.getMessage().getText());
+
+        updateData.getMessage().setMessageId(update.getMessage().getMessageId());
+
+        updateData.getMessage().setUserId(update.getMessage().getFrom().getId());
+        updateData.getMessage().setFirstName(update.getMessage().getFrom().getFirstName());
+        updateData.getMessage().setLastName(update.getMessage().getFrom().getLastName());
+        updateData.getMessage().setUserName(update.getMessage().getFrom().getUserName());
+
+        updateData.getMessage().setChatId(update.getMessage().getChatId());
+        updateData.getMessage().setText(update.getMessage().getText());
     }
 
     private void setUpdateDataLocationInfo(UpdateData updateData, Update update) {

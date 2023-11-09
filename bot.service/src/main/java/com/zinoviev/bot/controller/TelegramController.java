@@ -11,6 +11,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface TelegramController {
 
+    void setBotDataController(BotDataController botDataController);
+
     void sendMessage(SendMessage message);
     void sendMessage(EditMessageText editMessageText);
     void sendMessage(EditMessageReplyMarkup replyMarkup);

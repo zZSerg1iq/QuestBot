@@ -3,7 +3,7 @@ package com.zinoviev.data.handler;
 import com.zinoviev.entity.model.UpdateData;
 
 
-public interface RequestService {
+public interface RequestHandlerService {
 
     void processTheRequest(UpdateData updateData);
 }

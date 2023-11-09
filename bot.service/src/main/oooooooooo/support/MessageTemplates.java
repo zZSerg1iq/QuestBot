@@ -1,6 +1,7 @@
 package com.zinoviev.bot.support;
 
 import com.zinoviev.bot.entity.rest.UpdateData;
+import com.zinoviev.entity.model.UpdateData;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;

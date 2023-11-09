@@ -6,17 +6,18 @@ import com.zinoviev.entity.enums.RequestStatus;
 import com.zinoviev.entity.model.UpdateData;
 import com.zinoviev.entity.model.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class UserRequestService implements RequestService{
+@Component
+public class UserRequestHandlerService implements RequestHandlerService {
 
     private final UserRepositoryService userRepositoryService;
+
     private final DBResponseController dbResponseController;
 
 
     @Autowired
-    public UserRequestService(UserRepositoryService userRepositoryService, DBResponseController dbResponseController) {
+    public UserRequestHandlerService(UserRepositoryService userRepositoryService, DBResponseController dbResponseController) {
         this.userRepositoryService = userRepositoryService;
 
         this.dbResponseController = dbResponseController;
@@ -27,6 +28,7 @@ public class UserRequestService implements RequestService{
 
     public void processTheRequest(UpdateData updateData){
         System.out.println("БД: обрабатываем...");
+        System.out.println(updateData);
 
         if (updateData.getRequestStatus() == RequestStatus.SAVE_ONLY){
             userRepositoryService.saveUser(updateData.getUserData());
