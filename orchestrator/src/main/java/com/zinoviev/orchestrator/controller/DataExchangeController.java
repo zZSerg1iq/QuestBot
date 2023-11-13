@@ -10,7 +10,7 @@ public interface DataExchangeController {
 
     void sendDataTo(ServiceNames service, UpdateData updateData);
 
-    ResponseEntity<String> getBotRequest(@RequestBody UpdateData updateData);
+    ResponseEntity<UpdateData> getBotRequest(@RequestBody UpdateData updateData);
 
-    ResponseEntity<String> getDBResponse(@RequestBody UpdateData updateData);
+    ResponseEntity<UpdateData> getDBResponse(@RequestBody UpdateData updateData);
 }

@@ -1,9 +1,8 @@
-package com.zinoviev.orchestrator.service.role.user_role_handlers.sub;
+package com.zinoviev.orchestrator.service.user.sub;
 
 import com.zinoviev.entity.model.UpdateData;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zinoviev.orchestrator.controller.DataExchangeController;
+import com.zinoviev.orchestrator.service.MessageBuilderService;
 
 public class AccountMenuHandler {
 
@@ -11,17 +10,17 @@ public class AccountMenuHandler {
     private final String BALANCE = "ACCOUNT_BALANCE";
     private final String CHANGE_NAME = "ACCOUNT_NAME";
 
-
+    private final DataExchangeController exchangeController;
     private final UpdateData updateData;
+    private final MessageBuilderService messageBuilderService;
 
-    private final String username;
-
-    public AccountMenuHandler(UpdateData updateData) {
+    public AccountMenuHandler(DataExchangeController exchangeController, MessageBuilderService messageBuilderService, UpdateData updateData) {
+        this.exchangeController = exchangeController;
         this.updateData = updateData;
-        username = updateData.getUserData().getAvatarName() != null ? updateData.getUserData().getAvatarName() : updateData.getUserData().getFirstName();
+        this.messageBuilderService = messageBuilderService;
     }
 
-    public void showAccountMenu() {
+    public void showAccountMainMenu() {
        /* List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
         List<InlineKeyboardButton> buttons = new ArrayList<>();
         buttons.add(InlineKeyboardButton.builder().text("Статистика").callbackData(STATISTICS).build());

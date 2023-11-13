@@ -1,91 +1,131 @@
-package com.zinoviev.orchestrator.service.role.user_role_handlers;
+package com.zinoviev.orchestrator.service.user;
 
 
+import com.zinoviev.entity.enums.DefaultBotMessages;
+import com.zinoviev.entity.enums.MessageType;
 import com.zinoviev.entity.model.UpdateData;
-import com.zinoviev.orchestrator.support.CryptoTool;
+import com.zinoviev.entity.model.updatedata.entity.Message;
+import com.zinoviev.entity.model.updatedata.entity.ReplyKeyboardType;
+import com.zinoviev.orchestrator.controller.DataExchangeController;
+import com.zinoviev.orchestrator.enums.ServiceNames;
+import com.zinoviev.orchestrator.service.MessageBuilderService;
+import com.zinoviev.orchestrator.service.user.sub.AccountMenuHandler;
+import com.zinoviev.orchestrator.service.user.sub.HelpMenuHandler;
+import com.zinoviev.orchestrator.service.user.sub.QuestMenuHandler;
 import lombok.Data;
 
 
 @Data
 public class UserRoleHandler {
 
-    private String CANCEL = "CANCEL";
+    private final String CANCEL = "ACTION_CANCEL";
 
-    //@Value("${invitelink.salt}");
-    private String invitelink;
+    private final DataExchangeController exchangeController;
+    private final MessageBuilderService messageBuilderService;
 
-
-    private final CryptoTool cryptoTool;
-
-    private String username;
-
-
-    public UserRoleHandler() {
-        cryptoTool = new CryptoTool(invitelink);
+    public UserRoleHandler(DataExchangeController exchangeController) {
+        this.exchangeController = exchangeController;
+        this.messageBuilderService = new MessageBuilderService();
     }
 
-
     public void actionHandler(UpdateData updateData) {
-      /*  username = updateData.getUserData().getAvatarName() != null ? updateData.getUserData().getAvatarName() : updateData.getFirstName();
-
-        if (updateData.getCallbackQueryData() != null) {
+        if (updateData.getMessage().getCallbackData() != null) {
             userCallBackQueryAction(updateData);
         } else {
             userMessageAction(updateData);
-        }*/
+        }
     }
 
     private void userMessageAction(UpdateData updateData) {
-       /* if (updateData.getText().equalsIgnoreCase("квесты")) {
-            new QuestMenuHandler(updateData, telegramController).showQuestMenu();
+        if (updateData.getMessage().getText().equalsIgnoreCase("аккаунт")) {
+            new AccountMenuHandler(exchangeController, messageBuilderService, updateData).showAccountMainMenu();
 
-        } else if (updateData.getText().equalsIgnoreCase("аккаунт")) {
-            new AccountMenuHandler(updateData, telegramController).showAccountMenu();
+        } else if (updateData.getMessage().getText().equalsIgnoreCase("квесты")) {
+            new QuestMenuHandler(exchangeController, messageBuilderService, updateData).showQuestMainMenu();
 
-        } else if (updateData.getText().equalsIgnoreCase("гайд")) {
-            new HelpMenuHandler(updateData, telegramController).showHelpMenu();
+        } else if (updateData.getMessage().getText().equalsIgnoreCase("справка")) {
+            new HelpMenuHandler(exchangeController, messageBuilderService, updateData).showHelpMainMenu();
 
-        } else if (updateData.getText().contains("play:")) {
+        } else if (updateData.getMessage().getText().contains("play:")) {
             playQuest(updateData);
 
         } else {
-            telegramController.sendMessage(MessageTemplates.getSendMessageTemplate(updateData.getUserId(), username + DefaultBotMessages.TEXT_COMMAND_FIRST_ERROR_MESSAGE.getMessage()));
-            telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.removeKeyboard(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage()));
-            telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.getUserReplyKeyboardMarkupMenuMessage(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_THIRD_MESSAGE.getMessage()));
-        }*/
+            // переотравить заново клавиатуру и показать сообщение что команда неизвестна
+
+            //telegramController.sendMessage(MessageTemplates.getSendMessageTemplate(updateData.getUserId(), username + DefaultBotMessages.TEXT_COMMAND_FIRST_ERROR_MESSAGE.getMessage()));
+            //telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.removeKeyboard(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage()));
+            //telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.getUserReplyKeyboardMarkupMenuMessage(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_THIRD_MESSAGE.getMessage()));
+        }
     }
 
 
     private void userCallBackQueryAction(UpdateData updateData) {
-        /*if (updateData.getCallbackQueryData().contains("QUEST")) {
-            new QuestMenuHandler(updateData, telegramController).questMenuCallback();
-        } else if (updateData.getCallbackQueryData().contains("ACCOUNT")) {
-            new AccountMenuHandler(updateData, telegramController).accountMenuCallback();
-        } else if (updateData.getCallbackQueryData().contains("HOW_TO")) {
-            new HelpMenuHandler(updateData, telegramController).helpMenuCallback();
-        } else if (updateData.getCallbackQueryData().contains("CANCEL")) {
-            menuCancel(updateData);
-        }*/
+        System.out.println(">>>>>>>>>>>>>>  "+updateData.getMessage().getCallbackData());
+
+        if (updateData.getMessage().getCallbackData().startsWith("QUEST")) {
+            new QuestMenuHandler(exchangeController, messageBuilderService, updateData).questMenuCallback();
+
+        } else if (updateData.getMessage().getCallbackData().contains("ACCOUNT")) {
+            new AccountMenuHandler(exchangeController, messageBuilderService, updateData).accountMenuCallback();
+
+        } else if (updateData.getMessage().getCallbackData().contains("HOW_TO")) {
+            new HelpMenuHandler(exchangeController, messageBuilderService, updateData).helpMenuCallback();
+
+        } else if (updateData.getMessage().getCallbackData().contains(CANCEL)) {
+            cancelAction(updateData);
+        }
     }
 
 
     private void playQuest(UpdateData updateData) {
-/*        String[] tempValue = message.getText().split(":");
+        String[] tempValue = updateData.getMessage().getText().split(":");
 
-        if (runningQuestManager.isQuestAlreadyRunning(tempValue[1])) {
-            questRolesOffer(tempValue[1]);
-            return;
-        }
 
-        botController.sendMessage(
+        //if (runningQuestManager.isQuestAlreadyRunning(tempValue[1])) {
+        //    questRolesOffer(tempValue[1]);
+        //    return;
+        //}
+
+/*        botController.sendMessage(
                 MessageTemplateService.getSendMessageTemplate(
                         botUser.getTelegramId(), DefaultBotMessages.RUNNING_QUEST_LINK_BROKEN.getMessage()
                 ));*/
     }
 
 
-    private void menuCancel(UpdateData updateData) {
-      //  telegramController.sendMessage(MessageTemplates.getMenuCancelActionTemplate(updateData));
+    public void unknownCommandMessage(UpdateData updateData) {
+        /*//sendMessage(
+        // MessageTemplates.getSendMessageTemplate(updateData.getUserId(), username + DefaultBotMessages.TEXT_COMMAND_FIRST_ERROR_MESSAGE.getMessage()));
+        //telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.removeKeyboard(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage()));
+        //telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.getUserReplyKeyboardMarkupMenuMessage(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_THIRD_MESSAGE.getMessage()));
+
+
+        messageBuilderService.buildInlineMessage(
+                updateData.getMessage(),
+                MessageType.MESSAGE,
+                DefaultBotMessages.TEXT_COMMAND_UNKNOWN.getMessage(),
+                new String[]{},
+                new String[]{}
+        );
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+
+
+
+        Message message = updateData.getMessage();
+        message.setMessageType(MessageType.MESSAGE);
+        message.setKeyboardType(ReplyKeyboardType.REPLY);
+        message.setText(DefaultBotMessages.SIGN_UP_COMPLETE.getMessage());
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+
+
+        messageBuilderService.buildInlineMessage(
+                updateData.getMessage(),
+                MessageType.MESSAGE,
+                DefaultBotMessages.USER_QUEST_MENU.getMessage(),
+                new String[]{},
+                new String[]{}
+        );
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);*/
     }
 
 
@@ -94,9 +134,16 @@ public class UserRoleHandler {
 
 
 
-
-
-
+    private void cancelAction(UpdateData updateData) {
+        messageBuilderService.buildInlineMessage(
+                updateData.getMessage(),
+                MessageType.DELETE,
+                DefaultBotMessages.ACTION_CANCEL.getMessage(),
+                new String[]{},
+                new String[]{}
+        );
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+    }
 
 
 

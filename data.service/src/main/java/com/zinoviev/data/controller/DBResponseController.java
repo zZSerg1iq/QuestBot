@@ -9,7 +9,7 @@ public interface DBResponseController {
 
     void setRequestService(RequestHandlerService requestHandlerService);
 
-    String userData(@RequestBody UpdateData updateData);
+    ResponseEntity<UpdateData> userData(@RequestBody UpdateData updateData);
 
     void sendUserDataResponse(UpdateData updateData);
 

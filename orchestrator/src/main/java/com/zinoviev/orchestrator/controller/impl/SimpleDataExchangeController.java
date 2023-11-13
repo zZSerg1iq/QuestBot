@@ -4,10 +4,11 @@ import com.zinoviev.entity.model.UpdateData;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
 import com.zinoviev.orchestrator.enums.ServiceNames;
 import com.zinoviev.orchestrator.handler.UpdateDataHandler;
-import com.zinoviev.orchestrator.handler.impl.SimpleUpdateDataDataHandler;
+import com.zinoviev.orchestrator.handler.impl.SimpleUpdateDataHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
@@ -25,24 +26,25 @@ public class SimpleDataExchangeController implements DataExchangeController {
     private String dataService ="http://localhost:24002/api/data/userdata";
 
     //@Value("${quest.service}")
-    private String questService = "http://localhost:24005/api/bot/userdata";
+    private String questService = "http://localhost:24005/api/quest/userdata";
 
     private final UpdateDataHandler updateDataHandler;
 
 
     @Autowired
     public SimpleDataExchangeController() {
-        updateDataHandler = new SimpleUpdateDataDataHandler(this);
+        updateDataHandler = new SimpleUpdateDataHandler(this);
     }
 
     @PostMapping("/bot/new/request")
-    public ResponseEntity<String> getBotRequest(UpdateData updateData) {
-        updateDataHandler.addRequest(updateData);
+    public ResponseEntity<UpdateData> getBotRequest(UpdateData updateData) {
+        //updateDataHandler.addRequest(updateData);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/db/new/response")
-    public ResponseEntity<String> getDBResponse(UpdateData updateData) {
+    public ResponseEntity<UpdateData> getDBResponse(@RequestBody UpdateData updateData) {
+        System.out.println("DB DATA");
         updateDataHandler.addRequest(updateData);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -55,6 +57,9 @@ public class SimpleDataExchangeController implements DataExchangeController {
             case DATA_SERVICE -> serviceLink = dataService;
             case QUEST_SERVICE -> serviceLink = questService;
         }
+
+        System.out.println("SENDING DATA to :"+serviceLink);
+        System.out.println(updateData);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

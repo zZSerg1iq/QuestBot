@@ -1,97 +1,146 @@
-package com.zinoviev.orchestrator.service.role.user_role_handlers.sub;
+package com.zinoviev.orchestrator.service.user.sub;
 
 
+import com.zinoviev.entity.enums.DefaultBotMessages;
+import com.zinoviev.entity.enums.MessageType;
 import com.zinoviev.entity.model.UpdateData;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zinoviev.orchestrator.controller.DataExchangeController;
+import com.zinoviev.orchestrator.enums.ServiceNames;
+import com.zinoviev.orchestrator.service.MessageBuilderService;
 
 public class QuestMenuHandler {
 
-    private final String CREATE = "CREATE_QUEST";
-    private final String FAVOURITES = "FAVOURITES_QUEST";
-    private final String DATABASE = "QUEST_DATABASE";
+    /**
+     * buttons callback messages
+     */
+    private final String QUEST_CREATION_MENU = "QUEST_CREATE_MENU";
+    private final String QUEST_CREATE_NEW = "QUEST_CREATE_NEW";
+    private final String UPLOAD_QUEST = "QUEST_CREATE_UPLOAD";
+    private final String MY_QUEST_LIST = "QUEST_MY_LIST";
+    private final String RUN_QUEST = "QUEST_MY_RUN";
+    private final String VIEW_QUEST = "QUEST_MY_VIEW";
+    private final String EDIT_QUEST = "QUEST_MY_EDIT";
+    private final String REMOVE_QUEST = "QUEST_MY_REMOVE";
+    private final String DATABASE = "QUEST_VIEW_DATABASE";
+    private final String CANCEL = "ACTION_CANCEL";
 
 
+    private final DataExchangeController exchangeController;
     private final UpdateData updateData;
+    private final MessageBuilderService messageBuilderService;
 
-    private final String username;
 
-
-    public QuestMenuHandler(UpdateData updateData) {
+    public QuestMenuHandler(DataExchangeController exchangeController, MessageBuilderService messageBuilderService, UpdateData updateData) {
+        this.exchangeController = exchangeController;
         this.updateData = updateData;
-        username = updateData.getUserData().getAvatarName() != null ? updateData.getUserData().getAvatarName() : updateData.getUserData().getFirstName();
+        this.messageBuilderService = messageBuilderService;
     }
 
-
-    public void showQuestMenu() {
-       /* List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
-        List<InlineKeyboardButton> buttons = new ArrayList<>();
-        buttons.add(InlineKeyboardButton.builder().text("Создать").callbackData(CREATE).build());
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(InlineKeyboardButton.builder().text("Избранное").callbackData(FAVOURITES).build());
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(InlineKeyboardButton.builder().text("База квестов").callbackData(DATABASE).build());
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(InlineKeyboardButton.builder().text("Отмена").callbackData("CANCEL").build());
-        buttonRows.add(buttons);
-
-        telegramController.sendMessage(
-                MessageTemplates.getInlineKeyboardSendMessageTemplate(updateData.getUserId(), buttonRows,
-                        username + DefaultBotMessages.USER_HALLO_MESSAGE_1.getMessage()
-                ));*/
+    public void showQuestMainMenu() {
+        messageBuilderService.buildInlineMessage(
+                updateData.getMessage(),
+                MessageType.MESSAGE,
+                DefaultBotMessages.USER_QUEST_MENU.getMessage(),
+                new String[]{"Создание", "Мои квесты", "Доступные", "Отмена"},
+                new String[]{QUEST_CREATION_MENU, MY_QUEST_LIST, DATABASE, CANCEL}
+        );
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
-
 
     public void questMenuCallback() {
         switch (updateData.getMessage().getCallbackData()) {
-            case CREATE -> {
-            }
-            case FAVOURITES -> {
-            }
-            case DATABASE -> {
-            }
+            case QUEST_CREATION_MENU -> questCreationMenu();
+            case MY_QUEST_LIST -> myQuests();
+            case DATABASE -> viewDatabase();
         }
     }
 
-
-    private void createNewQuest() {
-        ///////////////////
+    private void questCreationMenu() {
+        messageBuilderService.buildInlineMessage(
+                updateData.getMessage(),
+                MessageType.EDIT_MESSAGE,
+                DefaultBotMessages.QUEST_CREATION_MENU.getMessage(),
+                new String[]{"Тут пока ничего нету 11111111"},
+                new String[]{CANCEL}
+        );
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
 
-    private void favourites() {
-        ///////////////////
-        /*//List<BotQuest> quests = questService.getUserQuestList(botUser.getId()); // все квесты пользователя
-        //List<BotQuest> quests = quests.addAll(questOwnersService.findAllByOwner_Id(botUser.getId())); // добавляем в список купленные квесты
-        List<BotQuest> quests = getFakeQuests(3);
+    private void myQuests() {
+        messageBuilderService.buildInlineMessage(
+                updateData.getMessage(),
+                MessageType.EDIT_MESSAGE,
+                DefaultBotMessages.USER_QUESTLIST_MENU.getMessage(),
+                new String[]{"Тут пока ничего нету 2222222"},
+                new String[]{CANCEL}
+        );
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+    }
 
-        List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
-        List<InlineKeyboardButton> buttons;
+    private void viewDatabase() {
+        messageBuilderService.buildInlineMessage(
+                updateData.getMessage(),
+                MessageType.EDIT_MESSAGE,
+                DefaultBotMessages.VIEW_DATABASE_MENU.getMessage(),
+                new String[]{"Тут пока ничего нету 2222222"},
+                new String[]{CANCEL}
+        );
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+    }
 
-        String messageText = DefaultBotMessages.QUEST_LIST_NON_EMPTY.getMessage();
 
-        if (quests.size() > 0) {
-            for (BotQuest q : quests) {
-                buttons = new ArrayList<>();
-                buttons.add(InlineKeyboardButton.builder().text(q.getName()).callbackData("QUEST_ACTION:" + q.getId()).build());
-                buttonRows.add(buttons);
-            }
 
-            buttons = new ArrayList<>();
-            buttons.add(InlineKeyboardButton.builder().text("Отмена").callbackData("ACTION_CANCEL").build());
-            buttonRows.add(buttons);
+
+    /*private void userCallBackQueryAction() {
+        String query = callbackQuery.getData();
+        /// QUEST MENU ///
+        if (query.contains("QUEST_ACTION")) {                  //меню выбранного квеста
+            selectedQuestAction(callbackQuery);
+        } else if (query.contains("START_QUEST")) {           //запуск квеста
+            startQuest(callbackQuery);
+        } else if (query.contains("VIEW_QUEST")) {           //просмотр квеста
+            viewQuest(callbackQuery);
+        } else if (query.contains("EDIT_QUEST")) {           //редактирование квеста
+            editQuest(callbackQuery);
+        } else if (query.contains("REMOVE_QUEST")) {         //удаление квеста
+            removeQuest(callbackQuery);
+        } else if (query.contains("STOP_QUEST")) {         //удаление квеста
+            stopQuest(callbackQuery);
+        } else if (query.contains("EDIT_NODE")) {         //удаление квеста
+            editNode(callbackQuery);
+        }
+
+        ///  PLAY QUEST SIGN UP ///
+        else if (query.contains("PLAY_QUEST_NOW")) {       //участие в квесте после запуска
+            playNow(callbackQuery);
+        } else if (query.contains("SELECT_ROLE")) {                  //регистрация в квесте
+            questRoleSelected(callbackQuery);
         } else {
-            messageText = DefaultBotMessages.QUEST_LIST_IS_EMPTY.getMessage();
+
+            switch (query) {
+                //основные меню
+                case "QUEST_MAIN_MENU" -> showQuestMenu(callbackQuery);
+                case "MY_QUEST_MENU" -> myQuestMenu(callbackQuery);
+                case "STATISTIC" -> statistics(callbackQuery);
+
+                case "ACCOUNT_MAIN_MENU" -> showAccountMenu(callbackQuery);
+                case "CHANGE_AVATAR_NAME" -> changeAvatarName(callbackQuery);
+                case "DONATE" -> donate(callbackQuery);
+
+                //помощь
+                case "QUEST_CREATION_HELP" -> creationQuestAbout(callbackQuery);
+                case "UPLOAD_NEW_QUESTS" -> uploadQuestAbout(callbackQuery);
+                case "QUEST_EDITING_HELP" -> editingQuestAbout(callbackQuery);
+                case "PLAY_QUEST_ABOUT" -> playQuestAbout(callbackQuery);
+
+                case "ACTION_CANCEL" -> cancel(callbackQuery);
+
+
+                default -> botController.sendMessage(MessageTemplateService.getEditedMessageTemplate(callbackQuery, "Что-то пошло не так...\nВозможно сообщение устарело или не может быть выполнено в данное время."));
+            }
         }
+    }*/
 
-
-        botController.sendMessage(MessageTemplateService.getEditedMessageTemplate(
-                callbackQuery, buttonRows, messageText
-        ));*/
-    }
 
     private void selectedQuestAction(String callbackData) {
         System.out.println();

@@ -13,6 +13,6 @@ public interface BotDataController {
     void sendUpdateDataToDB(UpdateData updateData);
 
 
-    ResponseEntity<String> orchestratorResponse(@RequestBody UpdateData updateData);
+    ResponseEntity<UpdateData> orchestratorResponse(@RequestBody UpdateData updateData);
 
 }

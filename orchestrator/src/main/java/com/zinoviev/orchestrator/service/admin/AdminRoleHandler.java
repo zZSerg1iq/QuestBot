@@ -1,4 +1,4 @@
-package com.zinoviev.orchestrator.service.role.admin_role_handlers;
+package com.zinoviev.orchestrator.service.admin;
 
 import com.zinoviev.entity.model.UpdateData;
 import lombok.Data;

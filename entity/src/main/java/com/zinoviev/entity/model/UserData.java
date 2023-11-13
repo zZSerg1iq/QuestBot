@@ -40,4 +40,6 @@ public class UserData {
         role = user.getRole();
         signInStatus = user.getSignInStatus();
     }
+
+
 }

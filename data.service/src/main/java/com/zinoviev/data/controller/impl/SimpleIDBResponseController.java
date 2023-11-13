@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -23,11 +24,10 @@ public class SimpleIDBResponseController implements DBResponseController {
         this.requestHandlerService = requestHandlerService;
     }
 
-
     @PostMapping("/userdata")
-    public String userData(@RequestBody UpdateData updateData) {
+    public ResponseEntity<UpdateData> userData(@RequestBody UpdateData updateData) {
         requestHandlerService.processTheRequest(updateData);
-        return "OK";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
@@ -36,21 +36,19 @@ public class SimpleIDBResponseController implements DBResponseController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        new RestTemplate().exchange(
-                orchestratorLink,
-                HttpMethod.POST,
-                new HttpEntity<>(updateData, headers),
-                UpdateData.class
-        );
-
- /*       if (responseEntity.getStatusCode() == HttpStatus.OK) {
-           // String responseBody = responseEntity.getBody();
-            System.out.println("Ответ от сервера:");
-            //System.out.println(responseBody);
-          //  break;
-        } else {
-            System.err.println("Ошибка при выполнении запроса. Статус код: " + responseEntity.getStatusCodeValue());
-        }*/
+        try {
+            ResponseEntity<UpdateData> responseEntity = new RestTemplate().exchange(
+                    orchestratorLink,
+                    HttpMethod.POST,
+                    new HttpEntity<>(updateData, headers),
+                    UpdateData.class
+            );
+            if (responseEntity.getStatusCode() != HttpStatus.OK) {
+                System.err.println("Ошибка при выполнении запроса. Статус код: " + responseEntity.getStatusCodeValue());
+            }
+        } catch (RestClientException e) {
+            System.err.println("Ошибка при выполнении запроса: " + e.getMessage());
+        }
     }
 
 }
