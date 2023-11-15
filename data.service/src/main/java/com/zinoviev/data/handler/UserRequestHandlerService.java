@@ -27,10 +27,8 @@ public class UserRequestHandlerService implements RequestHandlerService {
 
 
     public void processTheRequest(UpdateData updateData){
-        System.out.println("БД: обрабатываем...");
-        System.out.println(updateData);
-
         if (updateData.getRequestStatus() == RequestStatus.SAVE_ONLY){
+            System.out.println( updateData.getUserData().getSignInStatus() );
             userRepositoryService.saveUser(updateData.getUserData());
         } else {
             UserData userData = userRepositoryService.getUserDataByTelegramId(updateData);

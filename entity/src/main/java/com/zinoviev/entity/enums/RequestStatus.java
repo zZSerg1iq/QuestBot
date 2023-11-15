@@ -4,5 +4,4 @@ public enum RequestStatus {
     SAVE_ONLY,
     GET_STATISTICS;
 
-
 }

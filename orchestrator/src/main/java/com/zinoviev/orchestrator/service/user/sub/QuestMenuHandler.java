@@ -2,6 +2,7 @@ package com.zinoviev.orchestrator.service.user.sub;
 
 
 import com.zinoviev.entity.enums.DefaultBotMessages;
+import com.zinoviev.entity.enums.KeyboardType;
 import com.zinoviev.entity.enums.MessageType;
 import com.zinoviev.entity.model.UpdateData;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
@@ -37,13 +38,14 @@ public class QuestMenuHandler {
     }
 
     public void showQuestMainMenu() {
-        messageBuilderService.buildInlineMessage(
-                updateData.getMessage(),
-                MessageType.MESSAGE,
-                DefaultBotMessages.USER_QUEST_MENU.getMessage(),
-                new String[]{"Создание", "Мои квесты", "Доступные", "Отмена"},
-                new String[]{QUEST_CREATION_MENU, MY_QUEST_LIST, DATABASE, CANCEL}
-        );
+        messageBuilderService
+                .setText(updateData, DefaultBotMessages.USER_QUEST_MENU.getMessage())
+                .setMessageType(updateData, MessageType.MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateData,
+                        new String[]{"Создание", ">", "Мои квесты", ">", "Доступные", ">", "Отмена"},
+                        new String[]{QUEST_CREATION_MENU, ">", MY_QUEST_LIST, ">", DATABASE, ">", CANCEL}
+                );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
 
@@ -56,35 +58,38 @@ public class QuestMenuHandler {
     }
 
     private void questCreationMenu() {
-        messageBuilderService.buildInlineMessage(
-                updateData.getMessage(),
-                MessageType.EDIT_MESSAGE,
-                DefaultBotMessages.QUEST_CREATION_MENU.getMessage(),
-                new String[]{"Тут пока ничего нету 11111111"},
-                new String[]{CANCEL}
-        );
+        messageBuilderService
+                .setText(updateData, DefaultBotMessages.QUEST_CREATION_MENU.getMessage())
+                .setMessageType(updateData, MessageType.EDIT_MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateData,
+                        new String[]{"Тут пока ничего нету 11111111"},
+                        new String[]{CANCEL}
+                );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
 
     private void myQuests() {
-        messageBuilderService.buildInlineMessage(
-                updateData.getMessage(),
-                MessageType.EDIT_MESSAGE,
-                DefaultBotMessages.USER_QUESTLIST_MENU.getMessage(),
-                new String[]{"Тут пока ничего нету 2222222"},
-                new String[]{CANCEL}
-        );
+        messageBuilderService
+                .setText(updateData, DefaultBotMessages.USER_QUESTLIST_MENU.getMessage())
+                .setMessageType(updateData, MessageType.EDIT_MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateData,
+                        new String[]{"Тут пока ничего нету 2"},
+                        new String[]{CANCEL}
+                );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
 
     private void viewDatabase() {
-        messageBuilderService.buildInlineMessage(
-                updateData.getMessage(),
-                MessageType.EDIT_MESSAGE,
-                DefaultBotMessages.VIEW_DATABASE_MENU.getMessage(),
-                new String[]{"Тут пока ничего нету 2222222"},
-                new String[]{CANCEL}
-        );
+        messageBuilderService
+                .setText(updateData, DefaultBotMessages.VIEW_DATABASE_MENU.getMessage())
+                .setMessageType(updateData, MessageType.EDIT_MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateData,
+                        new String[]{"Тут пока ничего нету 3"},
+                        new String[]{CANCEL}
+                );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
 

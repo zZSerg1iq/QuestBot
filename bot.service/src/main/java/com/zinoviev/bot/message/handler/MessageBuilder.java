@@ -33,6 +33,8 @@ public class MessageBuilder implements ResponseMessageBuilder {
 
     private void buildMessageBody(UpdateData updateData) {
         Message message = updateData.getMessage();
+        System.out.println(">> "+message.getMessageType());
+
 
         switch (message.getMessageType()) {
             case MESSAGE -> buildSendMessage(updateData);
@@ -72,10 +74,13 @@ public class MessageBuilder implements ResponseMessageBuilder {
     }
 
     private ReplyKeyboard selectReplyKeyboard(UpdateData updateData) {
+        System.out.println(">>> "+ updateData.getMessage().getKeyboardType());
+
         return switch (updateData.getMessage().getKeyboardType()) {
             case REPLY_ADD -> getReplyKeyboard(updateData);
             case REPLY_REMOVE -> removeReplyKeyboard();
             case INLINE -> buildInlineButtons(updateData.getMessage());
+            case NULL -> null;
         };
     }
 
@@ -123,7 +128,8 @@ public class MessageBuilder implements ResponseMessageBuilder {
     }
 
     public ReplyKeyboardRemove removeReplyKeyboard() {
-        return new ReplyKeyboardRemove();
+        System.out.println("REMOVE");
+        return ReplyKeyboardRemove.builder().removeKeyboard(true).build();
     }
 
 

@@ -29,7 +29,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         if (user == null) {
             user = new User();
             user.setRole(Role.USER);
-            user.setSignInStatus(SignInStatus.SIGN_IN_NONE);
+            user.setSignInStatus(SignInStatus.SIGN_UP_NONE);
             user.setTelegramId(updateData.getMessage().getUserId());
             user.setUserName(updateData.getMessage().getUserName());
             user.setFirstName(updateData.getMessage().getFirstName());

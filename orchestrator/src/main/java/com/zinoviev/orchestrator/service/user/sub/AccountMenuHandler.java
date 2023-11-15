@@ -1,13 +1,15 @@
 package com.zinoviev.orchestrator.service.user.sub;
 
+import com.zinoviev.entity.enums.*;
 import com.zinoviev.entity.model.UpdateData;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
+import com.zinoviev.orchestrator.enums.ServiceNames;
 import com.zinoviev.orchestrator.service.MessageBuilderService;
+import com.zinoviev.orchestrator.service.SignUpService;
 
 public class AccountMenuHandler {
 
     private final String STATISTICS = "ACCOUNT_STATISTICS";
-    private final String BALANCE = "ACCOUNT_BALANCE";
     private final String CHANGE_NAME = "ACCOUNT_NAME";
 
     private final DataExchangeController exchangeController;
@@ -21,49 +23,38 @@ public class AccountMenuHandler {
     }
 
     public void showAccountMainMenu() {
-       /* List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
-        List<InlineKeyboardButton> buttons = new ArrayList<>();
-        buttons.add(InlineKeyboardButton.builder().text("Статистика").callbackData(STATISTICS).build());
-       *//* buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(InlineKeyboardButton.builder().text("Баланс").callbackData(BALANCE).build());*//*
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(InlineKeyboardButton.builder().text("Сменить имя").callbackData(CHANGE_NAME).build());
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(InlineKeyboardButton.builder().text("Отмена").callbackData("CANCEL").build());
-        buttonRows.add(buttons);
-
-        telegramController.sendMessage(
-                MessageTemplates.getInlineKeyboardSendMessageTemplate(updateData.getUserId(), buttonRows,
-                        username + DefaultBotMessages.USER_HALLO_MESSAGE_1.getMessage()
-                ));*/
+        messageBuilderService
+                .setText(updateData, DefaultBotMessages.USER_QUEST_MENU.getMessage())
+                .setMessageType(updateData, MessageType.MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateData,
+                        new String[]{"Статистика", ">", "Сменить имя", ">", "Отмена"},
+                        new String[]{STATISTICS, ">", CHANGE_NAME, ">", "CANCEL"}
+                );
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
 
     public void accountMenuCallback() {
-/*        switch (updateData.getCallbackQueryData()) {
+        switch (updateData.getMessage().getCallbackData()) {
             case STATISTICS -> showStatistic();
-            case BALANCE -> showBalance();
             case CHANGE_NAME -> changeName();
-        }*/
+        }
     }
 
     private void showStatistic() {
-/*        updateData.setRequestStatus(RequestStatus.GET_STATISTICS);
-        telegramController.saveUpdatedInfo(updateData);
-        new UserRegService(telegramController).proceedSignUp(updateData);*/
-    }
-
-    private void showBalance() {
-        //
+        messageBuilderService
+                .setText(updateData, DefaultBotMessages.USER_QUEST_MENU.getMessage())
+                .setMessageType(updateData, MessageType.EDIT_MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.NULL);
+        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
 
     private void changeName() {
-/*        updateData.getUserData().setSignInStatus(SignInStatus.SIGN_IN_OFFER);
+        updateData.getUserData().setSignInStatus(SignInStatus.SIGN_UP_OFFER);
         updateData.setRequestStatus(RequestStatus.SAVE_ONLY);
-        updateData.setCallbackQueryData("REG_ACCEPTED");
-        telegramController.saveUpdatedInfo(updateData);
-        new UserRegService(telegramController).proceedSignUp(updateData);*/
+        updateData.getMessage().setCallbackData("REG_ACCEPTED");
+        exchangeController.sendDataTo(ServiceNames.DATA_SERVICE, updateData);
+
+        new SignUpService(exchangeController).proceedSignUp(updateData);
     }
 }

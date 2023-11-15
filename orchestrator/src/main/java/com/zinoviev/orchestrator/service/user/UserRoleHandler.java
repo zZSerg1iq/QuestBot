@@ -2,10 +2,9 @@ package com.zinoviev.orchestrator.service.user;
 
 
 import com.zinoviev.entity.enums.DefaultBotMessages;
+import com.zinoviev.entity.enums.KeyboardType;
 import com.zinoviev.entity.enums.MessageType;
 import com.zinoviev.entity.model.UpdateData;
-import com.zinoviev.entity.model.updatedata.entity.Message;
-import com.zinoviev.entity.model.updatedata.entity.ReplyKeyboardType;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
 import com.zinoviev.orchestrator.enums.ServiceNames;
 import com.zinoviev.orchestrator.service.MessageBuilderService;
@@ -50,11 +49,7 @@ public class UserRoleHandler {
             playQuest(updateData);
 
         } else {
-            // переотравить заново клавиатуру и показать сообщение что команда неизвестна
-
-            //telegramController.sendMessage(MessageTemplates.getSendMessageTemplate(updateData.getUserId(), username + DefaultBotMessages.TEXT_COMMAND_FIRST_ERROR_MESSAGE.getMessage()));
-            //telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.removeKeyboard(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage()));
-            //telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.getUserReplyKeyboardMarkupMenuMessage(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_THIRD_MESSAGE.getMessage()));
+            unknownCommandMessage(updateData);
         }
     }
 
@@ -71,9 +66,8 @@ public class UserRoleHandler {
         } else if (updateData.getMessage().getCallbackData().contains("HOW_TO")) {
             new HelpMenuHandler(exchangeController, messageBuilderService, updateData).helpMenuCallback();
 
-        } else if (updateData.getMessage().getCallbackData().contains(CANCEL)) {
+        } else
             cancelAction(updateData);
-        }
     }
 
 
@@ -94,60 +88,31 @@ public class UserRoleHandler {
 
 
     public void unknownCommandMessage(UpdateData updateData) {
-        /*//sendMessage(
-        // MessageTemplates.getSendMessageTemplate(updateData.getUserId(), username + DefaultBotMessages.TEXT_COMMAND_FIRST_ERROR_MESSAGE.getMessage()));
-        //telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.removeKeyboard(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage()));
-        //telegramController.sendMessage(RoleReplyKeyboardMarkupMenuTemplates.getUserReplyKeyboardMarkupMenuMessage(updateData.getUserId(), DefaultBotMessages.TEXT_COMMAND_THIRD_MESSAGE.getMessage()));
-
-
-        messageBuilderService.buildInlineMessage(
-                updateData.getMessage(),
-                MessageType.MESSAGE,
-                DefaultBotMessages.TEXT_COMMAND_UNKNOWN.getMessage(),
-                new String[]{},
-                new String[]{}
-        );
+        // переотравить заново клавиатуру и показать сообщение что команда неизвестна
+        new MessageBuilderService()
+                .setText( updateData,updateData.getUserData().getAvatarName() + DefaultBotMessages.TEXT_COMMAND_UNKNOWN.getMessage())
+                .setMessageType(updateData, MessageType.MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.REPLY_REMOVE);
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
 
-
-
-        Message message = updateData.getMessage();
-        message.setMessageType(MessageType.MESSAGE);
-        message.setKeyboardType(ReplyKeyboardType.REPLY);
-        message.setText(DefaultBotMessages.SIGN_UP_COMPLETE.getMessage());
+        new MessageBuilderService()
+                .setText( updateData, DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage())
+                .setMessageType(updateData, MessageType.MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.REPLY_ADD);
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
-
-
-        messageBuilderService.buildInlineMessage(
-                updateData.getMessage(),
-                MessageType.MESSAGE,
-                DefaultBotMessages.USER_QUEST_MENU.getMessage(),
-                new String[]{},
-                new String[]{}
-        );
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);*/
     }
-
-
-
 
 
 
 
     private void cancelAction(UpdateData updateData) {
-        messageBuilderService.buildInlineMessage(
-                updateData.getMessage(),
-                MessageType.DELETE,
-                DefaultBotMessages.ACTION_CANCEL.getMessage(),
-                new String[]{},
-                new String[]{}
-        );
+        messageBuilderService
+                .setText(updateData, DefaultBotMessages.ACTION_CANCEL.getMessage())
+                .setKeyboardType(updateData, KeyboardType.NULL)
+                .setMessageType(updateData, MessageType.DELETE);
+
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
-
-
-
-
 
 
 

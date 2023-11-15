@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
@@ -56,6 +57,12 @@ public class SimpleTelegramController extends TelegramLongPollingBot implements 
     public void onUpdateReceived(Update update) {
         UpdateData updateData = updateDataMapper.mapUpdateToUpdateData(update);
         botDataController.sendUpdateDataToDB(updateData);
+    /*    sendMessage( SendMessage.builder()
+                .chatId(update.getMessage().getChatId())
+                .text("1")
+                .replyMarkup(ReplyKeyboardRemove.builder().removeKeyboard(true).build())
+                .build());*/
+
 
         // log.debug(update.getMessage());
     }

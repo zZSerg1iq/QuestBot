@@ -6,7 +6,7 @@ import com.zinoviev.entity.enums.MessageType;
 import com.zinoviev.entity.model.UpdateData;
 import com.zinoviev.entity.model.updatedata.entity.InlineButton;
 import com.zinoviev.entity.model.updatedata.entity.Message;
-import com.zinoviev.entity.model.updatedata.entity.ReplyKeyboardType;
+import com.zinoviev.entity.enums.KeyboardType;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
 import com.zinoviev.orchestrator.enums.ServiceNames;
 import com.zinoviev.orchestrator.service.MessageBuilderService;
@@ -22,40 +22,26 @@ public class HelpMenuHandler {
     private final String PLAY = "HOW_TO_PLAY";
 
     private final DataExchangeController exchangeController;
+    private final MessageBuilderService messageBuilderService;
 
     private final UpdateData updateData;
 
 
     public HelpMenuHandler(DataExchangeController exchangeController, MessageBuilderService messageBuilderService, UpdateData updateData) {
         this.exchangeController = exchangeController;
+        this.messageBuilderService = messageBuilderService;
         this.updateData = updateData;
     }
 
     public void showHelpMainMenu() {
-        List<List<InlineButton>> buttonRows = new ArrayList<>();
-        List<InlineButton> buttons = new ArrayList<>();
-
-        buttons.add(new InlineButton.Builder().setText("Создание квестов").setCallbackData(CREATION).build());
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(new InlineButton.Builder().setText("Загрузка файла квеста").setCallbackData(UPLOAD).build());
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(new InlineButton.Builder().setText("Редактирование квеста").setCallbackData(EDITING).build());
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(new InlineButton.Builder().setText("Как играть").setCallbackData(PLAY).build());
-        buttonRows.add(buttons);
-        buttons = new ArrayList<>();
-        buttons.add(new InlineButton.Builder().setText("Отмена").setCallbackData("ACTION_CANCEL").build());
-        buttonRows.add(buttons);
-
-        Message message = updateData.getMessage();
-        message.setMessageType(MessageType.MESSAGE);
-        message.setText(DefaultBotMessages.USER_HELP_MAIN_MENU_MESSAGE.getMessage());
-        message.setKeyboardType(ReplyKeyboardType.INLINE);
-        message.setButtons(buttonRows);
-
+        messageBuilderService
+                .setText(updateData, DefaultBotMessages.USER_HELP_MAIN_MENU_MESSAGE.getMessage())
+                .setMessageType(updateData, MessageType.MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateData,
+                        new String[]{"Создание квестов", ">", "Загрузка файла квеста", ">", "Редактирование квеста", ">", "Как играть", ">", "Отмена"},
+                        new String[]{CREATION, ">", UPLOAD, ">", EDITING, ">", PLAY, ">",  "CANCEL"}
+                );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
 
@@ -69,10 +55,20 @@ public class HelpMenuHandler {
     }
 
     private void showHelp(String botMessages){
+/*        messageBuilderService
+                .setText(updateData, DefaultBotMessages.USER_QUEST_MENU.getMessage())
+                .setMessageType(updateData, MessageType.MESSAGE)
+                .setKeyboardType(updateData, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateData,
+                        new String[]{"Статистика", ">", "Сменить имя", ">", "Отмена"},
+                        new String[]{STATISTICS, ">", CHANGE_NAME, ">", CANCEL}
+                );*/
+
+
         Message message = updateData.getMessage();
         message.setMessageType(MessageType.EDIT_MESSAGE);
         message.setText(botMessages);
-        message.setKeyboardType(ReplyKeyboardType.NULL);
+        message.setKeyboardType(KeyboardType.NULL);
         message.setButtons(null);
 
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);

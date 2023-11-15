@@ -4,7 +4,6 @@ import com.zinoviev.entity.enums.SignInStatus;
 import com.zinoviev.entity.model.UpdateData;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
 import com.zinoviev.orchestrator.handler.UpdateDataHandler;
-import com.zinoviev.orchestrator.service.MessageBuilderService;
 import com.zinoviev.orchestrator.service.SignUpService;
 import com.zinoviev.orchestrator.service.user.UserRoleHandler;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,7 @@ public class SimpleUpdateDataHandler implements UpdateDataHandler {
     @Override
     public void addRequest(UpdateData updateData) {
         System.out.println("add request :   is user logged in?");
-        if (updateData.getUserData().getSignInStatus() != SignInStatus.SIGN_IN_COMPLETE) {
+        if (updateData.getUserData().getSignInStatus() != SignInStatus.SIGN_UP_COMPLETE) {
             new SignUpService(exchangeController).proceedSignUp(updateData);
             return;
         }

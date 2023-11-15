@@ -13,8 +13,8 @@ public enum DefaultBotMessages {
      **/
     CALLBACK_ERROR_MESSAGE("Что-то пошло не так...\nВозможно сообщение устарело или не может быть выполнено в данное время."),
     TEXT_COMMAND_UNKNOWN(", к сожалению я не знаю такой команды. "),
-    TEXT_COMMAND_SECOND_MESSAGE("Вы можете взаимодействовать со мной, используя меню, находящееся рядом со строкой ввода"),
-    TEXT_COMMAND_THIRD_MESSAGE("\uD83D\uDE42"),
+    TEXT_COMMAND_SECOND_MESSAGE("Для взаимодействия используйте меню, находящееся рядом со строкой ввода. \uD83D\uDE42"),
+
 
 
     /******************************************
@@ -31,6 +31,7 @@ public enum DefaultBotMessages {
     SIGN_UP_SELECT_NAME("Прекрасно!\nПридумайте и введите имя, которое хотите использовать. \nНе волнуйтесь, его можно будет в любое время изменить в настройках аккаунта."),
     SIGN_UP_COMPLETE("Вы успешно зарегистрированы! Приятного использования!"),
     SIGN_UP_DENY("Если передумаете, возвращайтесь!"),
+    CHANGE_NAME_CANCEL("Вы отменили смену имени"),
 
 
     /**
@@ -39,16 +40,19 @@ public enum DefaultBotMessages {
      * --------------------------
      **/
     USER_QUEST_MENU("стартовое меню квестов"),
-    QUEST_CREATION_MENU("1"),
-    QUEST_CREATION_START("1"),
-    QUEST_UPLOAD("1"),
-    USER_QUESTLIST_MENU("1"),
-    USER_QUESTLIST_QUEST_SELECTED("1"),
-    USER_QUESTLIST_RUN("1"),
-    USER_QUESTLIST_VIEW("1"),
-    USER_QUESTLIST_UPDATE("1"),
-    USER_QUESTLIST_REMOVE("1"),
-    VIEW_DATABASE_MENU("1"),
+    QUEST_CREATION_MENU("creation menu"),
+    QUEST_CREATION_START("start quest creation"),
+    QUEST_UPLOAD("upload quest"),
+    USER_QUESTLIST_MENU("quest list menu"),
+    USER_QUESTLIST_QUEST_SELECTED("quest selected"),
+    USER_QUESTLIST_RUN("run quest"),
+    USER_QUESTLIST_VIEW("view quest"),
+    USER_QUESTLIST_UPDATE("update quest"),
+    USER_QUESTLIST_REMOVE("remove quest"),
+    VIEW_DATABASE_MENU("Database"),
+
+
+    ACCOUNT_STATISTICS("Statistic"),
 
 
 

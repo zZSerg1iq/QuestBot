@@ -44,7 +44,6 @@ public class SimpleDataExchangeController implements DataExchangeController {
 
     @PostMapping("/db/new/response")
     public ResponseEntity<UpdateData> getDBResponse(@RequestBody UpdateData updateData) {
-        System.out.println("DB DATA");
         updateDataHandler.addRequest(updateData);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -57,9 +56,6 @@ public class SimpleDataExchangeController implements DataExchangeController {
             case DATA_SERVICE -> serviceLink = dataService;
             case QUEST_SERVICE -> serviceLink = questService;
         }
-
-        System.out.println("SENDING DATA to :"+serviceLink);
-        System.out.println(updateData);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
