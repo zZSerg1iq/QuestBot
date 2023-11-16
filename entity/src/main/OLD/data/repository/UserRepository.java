@@ -1,14 +1,14 @@
-package com.zinoviev.data.repository;
+package com.zinoviev.sandbox.data.repository;
 
-import com.zinoviev.entity.data.user.User;
+import com.zinoviev.sandbox.data.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    User getUserByTelegramId(long userId);
+    User getUserByTelegramId(long id);
 
     User getUserByAvatarName(String name);
+
 
 }

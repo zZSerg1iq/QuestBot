@@ -1,6 +1,6 @@
 package com.zinoviev.entity.model;
 
-import com.zinoviev.entity.data.User;
+import com.zinoviev.entity.data.user.User;
 import com.zinoviev.entity.enums.Role;
 import com.zinoviev.entity.enums.SignInStatus;
 import lombok.Data;

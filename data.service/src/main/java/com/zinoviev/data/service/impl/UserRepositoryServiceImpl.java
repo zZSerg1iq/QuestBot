@@ -3,7 +3,7 @@ package com.zinoviev.data.service.impl;
 
 import com.zinoviev.data.repository.UserRepository;
 import com.zinoviev.data.service.UserRepositoryService;
-import com.zinoviev.entity.data.User;
+import com.zinoviev.entity.data.user.User;
 import com.zinoviev.entity.enums.Role;
 import com.zinoviev.entity.enums.SignInStatus;
 import com.zinoviev.entity.model.UpdateData;

@@ -39,8 +39,8 @@ public class HelpMenuHandler {
                 .setMessageType(updateData, MessageType.MESSAGE)
                 .setKeyboardType(updateData, KeyboardType.INLINE)
                 .setButtonsAndCallbacks(updateData,
-                        new String[]{"Создание квестов", ">", "Загрузка файла квеста", ">", "Редактирование квеста", ">", "Как играть", ">", "Отмена"},
-                        new String[]{CREATION, ">", UPLOAD, ">", EDITING, ">", PLAY, ">",  "CANCEL"}
+                        new String[]{"Создание квестов", null, "Загрузка файла квеста", null, "Редактирование квеста", null, "Как играть", null, "Отмена"},
+                        new String[]{CREATION, null, UPLOAD, null, EDITING, null, PLAY, null,  "CANCEL"}
                 );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
@@ -60,8 +60,8 @@ public class HelpMenuHandler {
                 .setMessageType(updateData, MessageType.MESSAGE)
                 .setKeyboardType(updateData, KeyboardType.INLINE)
                 .setButtonsAndCallbacks(updateData,
-                        new String[]{"Статистика", ">", "Сменить имя", ">", "Отмена"},
-                        new String[]{STATISTICS, ">", CHANGE_NAME, ">", CANCEL}
+                        new String[]{"Статистика", null, "Сменить имя", null, "Отмена"},
+                        new String[]{STATISTICS, null, CHANGE_NAME, null, CANCEL}
                 );*/
 
 

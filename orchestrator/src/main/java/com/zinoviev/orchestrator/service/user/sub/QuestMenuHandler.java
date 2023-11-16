@@ -43,8 +43,8 @@ public class QuestMenuHandler {
                 .setMessageType(updateData, MessageType.MESSAGE)
                 .setKeyboardType(updateData, KeyboardType.INLINE)
                 .setButtonsAndCallbacks(updateData,
-                        new String[]{"Создание", ">", "Мои квесты", ">", "Доступные", ">", "Отмена"},
-                        new String[]{QUEST_CREATION_MENU, ">", MY_QUEST_LIST, ">", DATABASE, ">", CANCEL}
+                        new String[]{"Создание", null, "Мои квесты", null, "Доступные", null, "Отмена"},
+                        new String[]{QUEST_CREATION_MENU, null, MY_QUEST_LIST, null, DATABASE, null, CANCEL}
                 );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
@@ -92,60 +92,6 @@ public class QuestMenuHandler {
                 );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
-
-
-
-
-    /*private void userCallBackQueryAction() {
-        String query = callbackQuery.getData();
-        /// QUEST MENU ///
-        if (query.contains("QUEST_ACTION")) {                  //меню выбранного квеста
-            selectedQuestAction(callbackQuery);
-        } else if (query.contains("START_QUEST")) {           //запуск квеста
-            startQuest(callbackQuery);
-        } else if (query.contains("VIEW_QUEST")) {           //просмотр квеста
-            viewQuest(callbackQuery);
-        } else if (query.contains("EDIT_QUEST")) {           //редактирование квеста
-            editQuest(callbackQuery);
-        } else if (query.contains("REMOVE_QUEST")) {         //удаление квеста
-            removeQuest(callbackQuery);
-        } else if (query.contains("STOP_QUEST")) {         //удаление квеста
-            stopQuest(callbackQuery);
-        } else if (query.contains("EDIT_NODE")) {         //удаление квеста
-            editNode(callbackQuery);
-        }
-
-        ///  PLAY QUEST SIGN UP ///
-        else if (query.contains("PLAY_QUEST_NOW")) {       //участие в квесте после запуска
-            playNow(callbackQuery);
-        } else if (query.contains("SELECT_ROLE")) {                  //регистрация в квесте
-            questRoleSelected(callbackQuery);
-        } else {
-
-            switch (query) {
-                //основные меню
-                case "QUEST_MAIN_MENU" -> showQuestMenu(callbackQuery);
-                case "MY_QUEST_MENU" -> myQuestMenu(callbackQuery);
-                case "STATISTIC" -> statistics(callbackQuery);
-
-                case "ACCOUNT_MAIN_MENU" -> showAccountMenu(callbackQuery);
-                case "CHANGE_AVATAR_NAME" -> changeAvatarName(callbackQuery);
-                case "DONATE" -> donate(callbackQuery);
-
-                //помощь
-                case "QUEST_CREATION_HELP" -> creationQuestAbout(callbackQuery);
-                case "UPLOAD_NEW_QUESTS" -> uploadQuestAbout(callbackQuery);
-                case "QUEST_EDITING_HELP" -> editingQuestAbout(callbackQuery);
-                case "PLAY_QUEST_ABOUT" -> playQuestAbout(callbackQuery);
-
-                case "ACTION_CANCEL" -> cancel(callbackQuery);
-
-
-                default -> botController.sendMessage(MessageTemplateService.getEditedMessageTemplate(callbackQuery, "Что-то пошло не так...\nВозможно сообщение устарело или не может быть выполнено в данное время."));
-            }
-        }
-    }*/
-
 
     private void selectedQuestAction(String callbackData) {
         System.out.println();

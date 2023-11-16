@@ -32,7 +32,7 @@ public class MessageBuilderService {
         List<InlineButton> buttons = new ArrayList<>();
 
         for (int i = 0; i < buttonNames.length; i++) {
-            if (buttonNames[i].equalsIgnoreCase(">")) {
+            if (buttonNames[i] == null) {
                 buttonRows.add(buttons);
                 buttons = new ArrayList<>();
                 continue;

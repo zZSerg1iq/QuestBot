@@ -28,8 +28,8 @@ public class AccountMenuHandler {
                 .setMessageType(updateData, MessageType.MESSAGE)
                 .setKeyboardType(updateData, KeyboardType.INLINE)
                 .setButtonsAndCallbacks(updateData,
-                        new String[]{"Статистика", ">", "Сменить имя", ">", "Отмена"},
-                        new String[]{STATISTICS, ">", CHANGE_NAME, ">", "CANCEL"}
+                        new String[]{"Статистика", null, "Сменить имя", null, "Отмена"},
+                        new String[]{STATISTICS, null, CHANGE_NAME, null, "CANCEL"}
                 );
         exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
     }
