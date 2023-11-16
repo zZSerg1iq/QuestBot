@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "quest_nodes")
@@ -30,12 +29,9 @@ public class QuestNode {
     private QuestNode nextNode;
 
 
-
-    @Column(name = "messages")
-    @OneToMany(mappedBy = "")
-    private List<ModeMessage> nodeMessages;
-
-
+    @JoinColumn(name = "id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestMessage> nodeMessages;
 
 
     // список ожидаемых ответов
@@ -48,6 +44,7 @@ public class QuestNode {
     //реагировать ли на неверные ответы
     @Column(name = "react_on_incorrect_answers")
     private boolean reactOnIncorrectAnswerMessages;
+
     //сообщения, которыми реагировать. Будет показано случайно выбранное
     @Column(name = "incorrect_answers_react_mess", length = MAX_MESSAGE_LEN)
     private String incorrectAnswersReactMessages;
@@ -55,12 +52,14 @@ public class QuestNode {
     //реагировать ли на верные ответы
     @Column(name = "react_On_Correct_Answer_Messages")
     private boolean reactOnCorrectAnswerMessages;
+
     //сообщения, которыми реагировать. Будет показано случайно выбранное
     @Column(name = "correct_answers_react_mess", length = MAX_MESSAGE_LEN)
     private String correctAnswersReactMessages;
 
     //геоточка
-    @OneToOne(mappedBy = "nodeId", fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id")
     private GeoPoint geoPoint;
 
     //переключаться ли на новый пункт квеста при достижении основной геоточки

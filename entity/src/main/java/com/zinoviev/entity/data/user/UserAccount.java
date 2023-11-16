@@ -22,11 +22,4 @@ public class UserAccount {
     @Column(name = "active")
     private boolean active;
 
-    @Override
-    public String toString() {
-        return "UserAccount{" +
-                "balance=" + balance +
-                ", active=" + active +
-                '}';
-    }
 }

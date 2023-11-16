@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table(name = "quest_node_geopoint")
+@Table(name = "geopoints")
 @Data
 public class GeoPoint {
 
@@ -16,39 +16,35 @@ public class GeoPoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
-    @JoinColumn(name = "node_id", referencedColumnName = "id")
-    private QuestNode nodeId;
-
     @Column
     private double longitude;
+
     @Column
     private double latitude;
 
+    //радиус самой точки
     @Column(name = "self_radius")
     private int selfRadius;
-
-
-    @Column(name = "arrived_messages")
-    @OneToMany(mappedBy = "")
-    private List<ModeMessage> arrivedMessages;
-
+    //сообщения, при достижении точки
+    @JoinColumn(name = "id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestMessage> arrivedMessages;
 
     //Средний радиус
     @Column(name = "geo_point_outer_radius")
     private int geoPointOuterRadius;
-
     //Сообщения, при входе в радиус
-    @Column(name = "outer_radius_messages", length = MAX_LEN)
-    private String outerRadiusMessages;
+    @JoinColumn(name = "id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestMessage> outerMessages;
 
     //Внешний радиус
     @Column(name = "geo_point_external_radius")
     private int geoPointExternalRadius;
-
-    //Сообщения, при входе в радиус
-    @Column(name = "external_radius_Messages", length = MAX_LEN)
-    private String externalRadiusMessages;
+    //сообщения, при достижении точки
+    @JoinColumn(name = "id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestMessage> externalMessages;
 
 
 }

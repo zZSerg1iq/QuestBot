@@ -1,9 +1,12 @@
 package com.zinoviev.entity.data.user;
 
+import com.zinoviev.entity.data.quest.Quest;
 import com.zinoviev.entity.enums.Role;
 import com.zinoviev.entity.enums.SignInStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -34,6 +37,9 @@ public class User {
 
     @Column(name = "sign_in_status")
     private SignInStatus signInStatus;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    private List<Quest> userQuests;
 
 
 }

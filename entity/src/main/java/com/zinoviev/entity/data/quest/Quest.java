@@ -4,6 +4,8 @@ import com.zinoviev.entity.data.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table(name = "quests")
 @Data
@@ -20,17 +22,9 @@ public class Quest {
     @Column(name = "quest_name")
     private String questName;
 
-    //@OneToMany(mappedBy = "questId", fetch = FetchType.LAZY)
-    //private List<QuestNode> startNode;
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "quest_id")
+    private List<QuestNode> startNode;
 
-    //@Column(name = "shared")
-    //@Enumerated(EnumType.STRING)
-    //private SharedQuest sharedType;
-
-    //@Column(name = "first_Player_Completes_The_Quest")
-    //private boolean firstPlayerCompletesTheQuest;
-
-    //@Column(name = "cost")
-    //private double cost;
 
 }
