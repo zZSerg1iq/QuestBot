@@ -1,13 +1,13 @@
 package com.zinoviev.data.service.impl;
 
 
-import com.zinoviev.data.entity.Role;
-import com.zinoviev.data.entity.SignInStatus;
-import com.zinoviev.data.entity.User;
 import com.zinoviev.data.repository.UserRepository;
 import com.zinoviev.data.service.UserRepositoryService;
-import com.zinoviev.data.service.entity.UpdateData;
-import com.zinoviev.data.service.entity.UserData;
+import com.zinoviev.entity.data.user.User;
+import com.zinoviev.entity.enums.Role;
+import com.zinoviev.entity.enums.SignInStatus;
+import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.model.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,17 +23,17 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
 
     @Override
     public UserData getUserDataByTelegramId(UpdateData updateData) {
-        User user = userRepository.getUserByTelegramId(updateData.getUserId());
+        User user = userRepository.getUserByTelegramId(updateData.getMessage().getUserId());
         UserData userData;
 
         if (user == null) {
             user = new User();
             user.setRole(Role.USER);
-            user.setSignInStatus(SignInStatus.SIGN_IN_NONE);
-            user.setTelegramId(updateData.getUserId());
-            user.setUserName(updateData.getUserName());
-            user.setFirstName(updateData.getFirstName());
-            user.setLastName(updateData.getLastName());
+            user.setSignInStatus(SignInStatus.SIGN_UP_NONE);
+            user.setTelegramId(updateData.getMessage().getUserId());
+            user.setUserName(updateData.getMessage().getUserName());
+            user.setFirstName(updateData.getMessage().getFirstName());
+            user.setLastName(updateData.getMessage().getLastName());
 
             user = userRepository.save(user);
         }
@@ -52,9 +52,6 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
     @Override
     public void saveUser(UserData userData) {
         User user = userRepository.findById(userData.getId()).orElseGet(User::new);
-        System.out.println("--------------------------");
-        System.out.println(userData.getUserName());
-        System.out.println("--------------------------");
 
         user.setUserName(userData.getUserName());
         user.setFirstName(userData.getFirstName());

@@ -1,7 +1,6 @@
 package com.zinoviev.entity.model;
 
-import com.zinoviev.entity.data.Statistics;
-import com.zinoviev.entity.data.User;
+import com.zinoviev.entity.data.user.User;
 import com.zinoviev.entity.enums.Role;
 import com.zinoviev.entity.enums.SignInStatus;
 import lombok.Data;
@@ -31,9 +30,6 @@ public class UserData {
 
     private SignInStatus signInStatus;
 
-
-    private Statistics statistics;
-
     public UserData(User user) {
         id = user.getId();
         telegramId = user.getTelegramId();
@@ -44,4 +40,6 @@ public class UserData {
         role = user.getRole();
         signInStatus = user.getSignInStatus();
     }
+
+
 }

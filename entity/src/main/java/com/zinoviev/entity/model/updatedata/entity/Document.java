@@ -12,11 +12,8 @@ import lombok.Setter;
 public class Document {
 
     private String fileId;
-
     private String fileUniqueId;
-
     private String fileName;
-
     private Long fileSize;
 
 }
