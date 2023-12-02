@@ -10,14 +10,11 @@ import java.util.List;
 @Data
 public class QuestNode {
 
-    private final int MAX_STAGE_NAME_LEN = 512;
-    private final int MAX_MESSAGE_LEN = 4096;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "stage_name", length = MAX_STAGE_NAME_LEN)
+    @Column(name = "stage_name")
     private String stageName;
 
     @ManyToOne
@@ -28,47 +25,36 @@ public class QuestNode {
     @JoinColumn(name = "next_node", referencedColumnName = "id")
     private QuestNode nextNode;
 
+    @OneToMany(mappedBy = "questNodeMessages")
+    private List<QuestInfoMessage> questMessages;
 
-    @JoinColumn(name = "id")
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestMessage> nodeMessages;
+    @OneToMany(mappedBy = "expectedAnswers")
+    private List<QuestTextMessage> expectedUserAnswers;
+
+    @Column(name = "answers_count")
+    private int requiredAnswersCount;
 
 
-    // список ожидаемых ответов
-    @Column(name = "user_answers", length = MAX_MESSAGE_LEN)
-    private String expectedUserAnswers;
+    @Column(name = "react_on_correct_answers")
+    private boolean reactOnCorrectAnswer;
 
-    @Column(name = "number_of_answers")
-    private int requiredNumberOfAnswers;
+    @OneToMany(mappedBy = "correctMessages", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<QuestTextMessage> correctAnswersReactMessages;
 
-    //реагировать ли на неверные ответы
-    @Column(name = "react_on_incorrect_answers")
-    private boolean reactOnIncorrectAnswerMessages;
+    @Column(name = "react_on_wrong_answers")
+    private boolean reactOnWrongAnswer;
 
-    //сообщения, которыми реагировать. Будет показано случайно выбранное
-    @Column(name = "incorrect_answers_react_mess", length = MAX_MESSAGE_LEN)
-    private String incorrectAnswersReactMessages;
+    @OneToMany(mappedBy = "incorrectMessages", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<QuestTextMessage> wrongAnswersReactMessages;
 
-    //реагировать ли на верные ответы
-    @Column(name = "react_On_Correct_Answer_Messages")
-    private boolean reactOnCorrectAnswerMessages;
-
-    //сообщения, которыми реагировать. Будет показано случайно выбранное
-    @Column(name = "correct_answers_react_mess", length = MAX_MESSAGE_LEN)
-    private String correctAnswersReactMessages;
-
-    //геоточка
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id")
+    @OneToOne(mappedBy = "questNode", fetch = FetchType.EAGER, orphanRemoval = true)
     private GeoPoint geoPoint;
 
-    //переключаться ли на новый пункт квеста при достижении основной геоточки
-    @Column(name = "switch_on_reached")
-    private boolean onReachedMainPointSwitchToNextNode;
+    @Column(name = "switch_to_next")
+    private boolean switchToNextNodeWhenPointReached;
 
-    //время, через которое произойдет переключение
-    @Column(name = "switch_time")
-    private int pauseInSecBeforeSwitchingToTheNextNode;
+    @Column(name = "pause_before_switch")
+    private int pauseBeforeSwitch;
 
 
 }

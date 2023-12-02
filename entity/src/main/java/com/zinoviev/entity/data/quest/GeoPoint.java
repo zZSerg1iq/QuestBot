@@ -10,8 +10,6 @@ import java.util.List;
 @Data
 public class GeoPoint {
 
-    private final int MAX_LEN = 4096;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -23,28 +21,23 @@ public class GeoPoint {
     private double latitude;
 
     //радиус самой точки
-    @Column(name = "self_radius")
+    @Column(name = "point_radius")
     private int selfRadius;
-    //сообщения, при достижении точки
-    @JoinColumn(name = "id")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestMessage> arrivedMessages;
+    @OneToMany(mappedBy = "arrivedMessages", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<QuestInfoMessage> arrivedMessages;
 
-    //Средний радиус
-    @Column(name = "geo_point_outer_radius")
+    @Column(name = "outer_radius")
     private int geoPointOuterRadius;
-    //Сообщения, при входе в радиус
-    @JoinColumn(name = "id")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestMessage> outerMessages;
+    @OneToMany(mappedBy = "outerMessages", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<QuestInfoMessage> outerMessages;
 
-    //Внешний радиус
-    @Column(name = "geo_point_external_radius")
+    @Column(name = "external_radius")
     private int geoPointExternalRadius;
-    //сообщения, при достижении точки
-    @JoinColumn(name = "id")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestMessage> externalMessages;
+    @OneToMany(mappedBy = "externalMessages", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<QuestInfoMessage> externalMessages;
 
+    @OneToOne
+    @JoinColumn(name = "geo_point", referencedColumnName = "id")
+    private QuestNode questNode;
 
 }

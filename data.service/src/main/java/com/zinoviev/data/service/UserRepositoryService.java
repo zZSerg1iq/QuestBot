@@ -1,15 +1,14 @@
 package com.zinoviev.data.service;
 
-import com.zinoviev.entity.model.UpdateData;
-import com.zinoviev.entity.model.UserData;
+import com.zinoviev.entity.dto.data.UserDto;
+import com.zinoviev.entity.dto.update.UpdateDto;
 
 
 public interface UserRepositoryService {
 
-    UserData getUserDataByTelegramId(UpdateData updateData);
+    UserDto getUserDataByTelegramId(UpdateDto updateDto);
 
-    public void saveUser(UserData botUser);
+    public void saveUser(UserDto botUserDto);
 
-    boolean isNamePresent(String text);
 
 }

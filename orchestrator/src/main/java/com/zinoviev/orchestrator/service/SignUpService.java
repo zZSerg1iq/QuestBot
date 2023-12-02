@@ -1,9 +1,9 @@
 package com.zinoviev.orchestrator.service;
 
 import com.zinoviev.entity.enums.*;
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
-import com.zinoviev.orchestrator.enums.ServiceNames;
+import com.zinoviev.orchestrator.enums.ServiceURL;
 
 
 public class SignUpService {
@@ -15,142 +15,134 @@ public class SignUpService {
 
 
     private final DataExchangeController exchangeController;
-
     private final MessageBuilderService messageBuilderService;
+
 
     public SignUpService(DataExchangeController exchangeController) {
         this.exchangeController = exchangeController;
         this.messageBuilderService = new MessageBuilderService();
     }
 
-    public void proceedSignUp(UpdateData updateData) {
-        selectSignUpStage(updateData);
+    public void proceedSignUp(UpdateDto updateDto) {
+        selectSignUpStage(updateDto);
     }
 
 
-    private void selectSignUpStage(UpdateData updateData) {
-        if (updateData.getMessage().getCallbackData() != null && updateData.getMessage().getCallbackData().equals(DENY)) {
-            regCancel(updateData);
+    private void selectSignUpStage(UpdateDto updateDto) {
+        if (updateDto.getMessageDto().getCallbackData() != null && updateDto.getMessageDto().getCallbackData().equals(DENY)) {
+            regCancel(updateDto);
             return;
         }
 
-        switch (updateData.getUserData().getSignInStatus()) {
-            case SIGN_UP_NONE -> userSignUpShowOffer(updateData);
-            case SIGN_UP_OFFER -> userSignUpSelectNameType(updateData);
-            case SIGN_UP_SELECT_NAME_TYPE -> userSignUpNameTypeCallbackHandler(updateData);
-            case SIGN_UP_SELECT_NAME -> userSignUpAcceptNewName(updateData);
+        switch (updateDto.getUserDTO().getSignInStatus()) {
+            case SIGN_UP_NONE -> userSignUpShowOffer(updateDto);
+            case SIGN_UP_OFFER -> userSignUpSelectNameType(updateDto);
+            case SIGN_UP_SELECT_NAME_TYPE -> userSignUpNameTypeCallbackHandler(updateDto);
+            case SIGN_UP_SELECT_NAME -> userSignUpAcceptNewName(updateDto);
         }
     }
 
 
-    private void userSignUpShowOffer(UpdateData updateData) {
-        System.out.println(">>> SIGN UP OFFER <<<");
-        dbSaveRequest(updateData, SignInStatus.SIGN_UP_OFFER);
+    private void userSignUpShowOffer(UpdateDto updateDto) {
+        dbSaveRequest(updateDto, SignInStatus.SIGN_UP_OFFER);
 
         messageBuilderService
-                .setText(updateData, DefaultBotMessages.SIGN_UP_OFFER.getMessage())
-                .setMessageType(updateData, MessageType.MESSAGE)
-                .setKeyboardType(updateData, KeyboardType.INLINE)
-                .setButtonsAndCallbacks(updateData,
+                .setText(updateDto, DefaultBotMessages.SIGN_UP_OFFER.getMessage())
+                .setMessageType(updateDto, MessageType.MESSAGE)
+                .setKeyboardType(updateDto, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateDto,
                         new String[]{"Да, конечно", "Нет, спасибо"},
                         new String[]{ACCEPTED, DENY});
 
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
     }
 
-    private void userSignUpSelectNameType(UpdateData updateData) {
-        System.out.println(">>> SELECT NAME TYPE <<<" + updateData.getMessage().getCallbackData());
+    private void userSignUpSelectNameType(UpdateDto updateDto) {
         MessageType messageType = MessageType.EDIT_MESSAGE;
 
-        if (updateData.getMessage().getCallbackData() == null) {
+        if (updateDto.getMessageDto().getCallbackData() == null) {
             messageType = MessageType.MESSAGE;
         }
 
-        if (updateData.getMessage().getCallbackData() != null) {
-            if (updateData.getMessage().getCallbackData().equals(ACCEPTED)) {
-                dbSaveRequest(updateData, SignInStatus.SIGN_UP_SELECT_NAME_TYPE);
+        if (updateDto.getMessageDto().getCallbackData() != null) {
+            if (updateDto.getMessageDto().getCallbackData().equals(ACCEPTED)) {
+                dbSaveRequest(updateDto, SignInStatus.SIGN_UP_SELECT_NAME_TYPE);
                 messageType = MessageType.EDIT_MESSAGE;
             }
         }
 
         messageBuilderService
-                .setText(updateData, DefaultBotMessages.SIGN_UP_SELECT_NAME_TYPE.getMessage())
-                .setMessageType(updateData, messageType)
-                .setKeyboardType(updateData, KeyboardType.INLINE)
-                .setButtonsAndCallbacks(updateData,
-                        new String[]{"Я его придумаю", updateData.getMessage().getFirstName(), "Возможно позже"},
+                .setText(updateDto, DefaultBotMessages.SIGN_UP_SELECT_NAME_TYPE.getMessage())
+                .setMessageType(updateDto, messageType)
+                .setKeyboardType(updateDto, KeyboardType.INLINE)
+                .setButtonsAndCallbacks(updateDto,
+                        new String[]{"Я его придумаю", updateDto.getMessageDto().getFirstName(), "Возможно позже"},
                         new String[]{NEW_NAME, USER_NAME, DENY}
                 );
 
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
     }
 
-    private void userSignUpNameTypeCallbackHandler(UpdateData updateData) {
-        System.out.println(">>> SELECT NAME TYPE CALLBACK<<<" + updateData.getMessage().getCallbackData());
+    private void userSignUpNameTypeCallbackHandler(UpdateDto updateDto) {
+        if (updateDto.getMessageDto().getCallbackData() != null) {
+            updateDto.setRequestType(RequestType.SAVE_ONLY);
 
-        if (updateData.getMessage().getCallbackData() != null) {
-            updateData.setRequestStatus(RequestStatus.SAVE_ONLY);
-
-            if (updateData.getMessage().getCallbackData().equals(NEW_NAME)) {
-                userSignUpNewNameSelected(updateData);
-            } else if (updateData.getMessage().getCallbackData().equals(USER_NAME)) {
-                userSignUpUserNameSelected(updateData);
+            if (updateDto.getMessageDto().getCallbackData().equals(NEW_NAME)) {
+                userSignUpNewNameSelected(updateDto);
+            } else if (updateDto.getMessageDto().getCallbackData().equals(USER_NAME)) {
+                userSignUpUserNameSelected(updateDto);
             } else {
-                regCancel(updateData);
+                regCancel(updateDto);
             }
         } else {
-            userSignUpSelectNameType(updateData);
+            userSignUpSelectNameType(updateDto);
         }
     }
 
-    private void userSignUpNewNameSelected(UpdateData updateData) {
-        System.out.println(">>> NEW NAME <<<");
-        dbSaveRequest(updateData, SignInStatus.SIGN_UP_SELECT_NAME);
+    private void userSignUpNewNameSelected(UpdateDto updateDto) {
+        dbSaveRequest(updateDto, SignInStatus.SIGN_UP_SELECT_NAME);
 
         messageBuilderService
-                .setText(updateData, DefaultBotMessages.SIGN_UP_SELECT_NAME.getMessage())
-                .setMessageType(updateData, MessageType.EDIT_MESSAGE)
-                .setKeyboardType(updateData, KeyboardType.NULL);
+                .setText(updateDto, DefaultBotMessages.SIGN_UP_SELECT_NAME.getMessage())
+                .setMessageType(updateDto, MessageType.EDIT_MESSAGE)
+                .setKeyboardType(updateDto, KeyboardType.NULL);
 
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
     }
 
-    private void userSignUpUserNameSelected(UpdateData updateData) {
-        System.out.println(">>> USER NAME <<<");
-        updateData.getUserData().setAvatarName(updateData.getMessage().getFirstName());
-        dbSaveRequest(updateData, SignInStatus.SIGN_UP_COMPLETE);
+    private void userSignUpUserNameSelected(UpdateDto updateDto) {
+        updateDto.getUserDTO().setGameName(updateDto.getMessageDto().getFirstName());
+        dbSaveRequest(updateDto, SignInStatus.SIGN_UP_COMPLETE);
 
         messageBuilderService
-                .setText(updateData, DefaultBotMessages.SIGN_UP_COMPLETE.getMessage())
-                .setMessageType(updateData, MessageType.DELETE);
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+                .setText(updateDto, DefaultBotMessages.SIGN_UP_COMPLETE.getMessage())
+                .setMessageType(updateDto, MessageType.DELETE);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
 
         messageBuilderService
-                .setText(updateData, DefaultBotMessages.SIGN_UP_COMPLETE.getMessage())
-                .setMessageType(updateData, MessageType.MESSAGE)
-                .setKeyboardType(updateData, KeyboardType.REPLY_ADD);
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+                .setText(updateDto, DefaultBotMessages.SIGN_UP_COMPLETE.getMessage())
+                .setMessageType(updateDto, MessageType.MESSAGE)
+                .setKeyboardType(updateDto, KeyboardType.REPLY_ADD);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
     }
 
-    private void userSignUpAcceptNewName(UpdateData updateData) {
-        System.out.println(">>> ACCEPT NEW NAME <<<");
-        updateData.getUserData().setAvatarName(updateData.getMessage().getText());
-        dbSaveRequest(updateData, SignInStatus.SIGN_UP_COMPLETE);
+    private void userSignUpAcceptNewName(UpdateDto updateDto) {
+        updateDto.getUserDTO().setGameName(updateDto.getMessageDto().getText());
+        dbSaveRequest(updateDto, SignInStatus.SIGN_UP_COMPLETE);
 
         messageBuilderService
-                .setText(updateData, DefaultBotMessages.SIGN_UP_COMPLETE.getMessage())
-                .setMessageType(updateData, MessageType.MESSAGE)
-                .setKeyboardType(updateData, KeyboardType.REPLY_ADD);
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+                .setText(updateDto, DefaultBotMessages.SIGN_UP_COMPLETE.getMessage())
+                .setMessageType(updateDto, MessageType.MESSAGE)
+                .setKeyboardType(updateDto, KeyboardType.REPLY_ADD);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
     }
 
-    private void regCancel(UpdateData updateData) {
-        System.out.println(">>> REG CANCEL <<<");
+    private void regCancel(UpdateDto updateDto) {
         SignInStatus signInStatus;
         String message;
         MessageType type;
 
-        if (updateData.getUserData().getAvatarName() == null) {
+        if (updateDto.getUserDTO().getGameName() == null) {
             signInStatus = SignInStatus.SIGN_UP_NONE;
             message = DefaultBotMessages.SIGN_UP_DENY.getMessage();
         } else {
@@ -158,24 +150,24 @@ public class SignUpService {
             message = DefaultBotMessages.CHANGE_NAME_CANCEL.getMessage();
         }
 
-        if (updateData.getMessage().getCallbackData() == null) {
+        if (updateDto.getMessageDto().getCallbackData() == null) {
             type = MessageType.MESSAGE;
         } else {
             type = MessageType.EDIT_MESSAGE;
         }
 
         messageBuilderService
-                .setText(updateData, message)
-                .setMessageType(updateData, type);
+                .setText(updateDto, message)
+                .setMessageType(updateDto, type);
 
-        dbSaveRequest(updateData, signInStatus);
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+        dbSaveRequest(updateDto, signInStatus);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
     }
 
-    private void dbSaveRequest(UpdateData updateData, SignInStatus signInStatus) {
-        updateData.getUserData().setSignInStatus(signInStatus);
-        updateData.setRequestStatus(RequestStatus.SAVE_ONLY);
-        exchangeController.sendDataTo(ServiceNames.DATA_SERVICE, updateData);
+    private void dbSaveRequest(UpdateDto updateDto, SignInStatus signInStatus) {
+        updateDto.getUserDTO().setSignInStatus(signInStatus);
+        updateDto.setRequestType(RequestType.SAVE_ONLY);
+        exchangeController.exchangeWith(ServiceURL.dataServiceUser, updateDto);
     }
 
 

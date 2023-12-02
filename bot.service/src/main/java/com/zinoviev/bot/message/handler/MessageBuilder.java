@@ -1,9 +1,8 @@
 package com.zinoviev.bot.message.handler;
 
 import com.zinoviev.bot.controller.TelegramController;
-import com.zinoviev.entity.enums.Role;
-import com.zinoviev.entity.model.UpdateData;
-import com.zinoviev.entity.model.updatedata.entity.Message;
+import com.zinoviev.entity.dto.update.UpdateDto;
+import com.zinoviev.entity.dto.update.include.MessageDto;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -27,69 +26,71 @@ public class MessageBuilder implements ResponseMessageBuilder {
         this.telegramController = telegramController;
     }
 
-    public void buildMessage(UpdateData updateData) {
-        buildMessageBody(updateData);
+    public void buildMessage(UpdateDto updateDto) {
+        buildMessageBody(updateDto);
     }
 
-    private void buildMessageBody(UpdateData updateData) {
-        Message message = updateData.getMessage();
-        System.out.println(">> "+message.getMessageType());
+    private void buildMessageBody(UpdateDto updateDto) {
+        MessageDto messageDto = updateDto.getMessageDto();
+        System.out.println(">> " + messageDto.getMessageType());
 
-
-        switch (message.getMessageType()) {
-            case MESSAGE -> buildSendMessage(updateData);
-            case EDIT_MESSAGE -> buildSendEditTextMessage(updateData);
-            case DELETE -> buildDeleteMessage(updateData);
+        switch (messageDto.getMessageType()) {
+            case MESSAGE -> buildSendMessage(updateDto);
+            case EDIT_MESSAGE -> buildSendEditTextMessage(updateDto);
+            case DELETE -> buildDeleteMessage(updateDto);
         }
     }
 
-    private void buildSendMessage(UpdateData updateData) {
+    private void buildSendMessage(UpdateDto updateDto) {
         SendMessage message = SendMessage.builder()
-                .chatId(updateData.getMessage().getUserId())
-                .text(updateData.getMessage().getText())
-                .replyMarkup(selectReplyKeyboard(updateData))
+                .chatId(updateDto.getMessageDto().getUserId())
+                .text(updateDto.getMessageDto().getText())
+                .replyMarkup(selectReplyKeyboard(updateDto))
                 .build();
 
         telegramController.sendMessage(message);
     }
 
-    private void buildSendEditTextMessage(UpdateData updateData) {
+    private void buildSendEditTextMessage(UpdateDto updateDto) {
         EditMessageText message = EditMessageText.builder()
-                .chatId(updateData.getMessage().getChatId())
-                .text(updateData.getMessage().getText())
-                .replyMarkup(buildInlineButtons(updateData.getMessage()))
-                .messageId(updateData.getMessage().getCallbackMessageId())
+                .chatId(updateDto.getMessageDto().getChatId())
+                .text(updateDto.getMessageDto().getText())
+                .replyMarkup(buildInlineButtons(updateDto.getMessageDto()))
+                .messageId(updateDto.getMessageDto().getCallbackMessageId())
                 .build();
 
         telegramController.sendMessage(message);
     }
 
-    private void buildDeleteMessage(UpdateData updateData) {
+    private void buildDeleteMessage(UpdateDto updateDto) {
         DeleteMessage message = DeleteMessage.builder()
-                .chatId(updateData.getMessage().getChatId())
-                .messageId(updateData.getMessage().getCallbackMessageId())
+                .chatId(updateDto.getMessageDto().getChatId())
+                .messageId(updateDto.getMessageDto().getCallbackMessageId())
                 .build();
 
         telegramController.sendMessage(message);
     }
 
-    private ReplyKeyboard selectReplyKeyboard(UpdateData updateData) {
-        System.out.println(">>> "+ updateData.getMessage().getKeyboardType());
+    private ReplyKeyboard selectReplyKeyboard(UpdateDto updateDto) {
+        System.out.println(">>> " + updateDto.getMessageDto().getKeyboardType());
 
-        return switch (updateData.getMessage().getKeyboardType()) {
-            case REPLY_ADD -> getReplyKeyboard(updateData);
+        return switch (updateDto.getMessageDto().getKeyboardType()) {
+            case REPLY_ADD -> getReplyKeyboard(updateDto);
             case REPLY_REMOVE -> removeReplyKeyboard();
-            case INLINE -> buildInlineButtons(updateData.getMessage());
+            case INLINE -> buildInlineButtons(updateDto.getMessageDto());
             case NULL -> null;
         };
     }
 
-    public ReplyKeyboard getReplyKeyboard(UpdateData updateData) {
-        return switch (updateData.getUserData().getRole()){
-            case USER -> getUserReplyKeyboardMarkup();
-            case PLAYER -> getPlayerReplyKeyboardMarkup();
-            case ADMIN -> getAdminReplyKeyboardMarkup();
-        };
+    public ReplyKeyboard getReplyKeyboard(UpdateDto updateDto) {
+        if (updateDto.getUserDTO().getPlayer() != null) {
+
+            return switch (updateDto.getUserDTO().getPlayer().getGameRole()) {
+                case PLAYER -> getPlayerReplyKeyboardMarkup();
+                case ADMIN -> getAdminReplyKeyboardMarkup();
+            };
+        }
+        return getUserReplyKeyboardMarkup();
     }
 
     private ReplyKeyboardMarkup getUserReplyKeyboardMarkup() {
@@ -133,10 +134,10 @@ public class MessageBuilder implements ResponseMessageBuilder {
     }
 
 
-    private InlineKeyboardMarkup buildInlineButtons(Message message) {
-        if (message.getButtons() != null) {
+    private InlineKeyboardMarkup buildInlineButtons(MessageDto messageDto) {
+        if (messageDto.getButtons() != null) {
             List<List<InlineKeyboardButton>> botButtonRows = new ArrayList<>();
-            var buttonsList = message.getButtons();
+            var buttonsList = messageDto.getButtons();
 
             for (int listRow = 0; listRow < buttonsList.size(); listRow++) {
                 List<InlineKeyboardButton> botButtons = new ArrayList<>();

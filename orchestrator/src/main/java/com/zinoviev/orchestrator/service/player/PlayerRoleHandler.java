@@ -1,6 +1,6 @@
 package com.zinoviev.orchestrator.service.player;
 
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 import lombok.Data;
 
 
@@ -8,7 +8,7 @@ import lombok.Data;
 public class PlayerRoleHandler{
 
 
-    public void actionHandler(UpdateData updateData) {
+    public void actionHandler(UpdateDto updateDto) {
 
     }
 

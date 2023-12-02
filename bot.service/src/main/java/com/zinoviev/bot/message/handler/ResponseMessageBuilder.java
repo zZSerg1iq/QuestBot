@@ -1,9 +1,9 @@
 package com.zinoviev.bot.message.handler;
 
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 
 public interface ResponseMessageBuilder {
 
-    void buildMessage(UpdateData updateData);
+    void buildMessage(UpdateDto updateDto);
 
 }
