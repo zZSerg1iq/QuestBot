@@ -1,6 +1,6 @@
 package com.zinoviev.orchestrator.service.admin;
 
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 import lombok.Data;
 
 
@@ -8,7 +8,7 @@ import lombok.Data;
 public class AdminRoleHandler{
 
 
-    public void actionHandler(UpdateData updateData) {
+    public void actionHandler(UpdateDto updateDto) {
 
     }
     /*

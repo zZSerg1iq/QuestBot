@@ -1,16 +1,16 @@
 package com.zinoviev.orchestrator.controller;
 
-import com.zinoviev.entity.model.UpdateData;
-import com.zinoviev.orchestrator.enums.ServiceNames;
+import com.zinoviev.entity.dto.update.UpdateDto;
+import com.zinoviev.orchestrator.enums.ServiceURL;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
 public interface DataExchangeController {
 
-    void sendDataTo(ServiceNames service, UpdateData updateData);
+    void exchangeWith(ServiceURL serviceLink, UpdateDto updateDto);
 
-    ResponseEntity<UpdateData> getBotRequest(@RequestBody UpdateData updateData);
+    ResponseEntity<UpdateDto> getBotRequest(@RequestBody UpdateDto updateDto);
 
-    ResponseEntity<UpdateData> getDBResponse(@RequestBody UpdateData updateData);
+    ResponseEntity<UpdateDto> userData(@RequestBody UpdateDto updateDto);
 }

@@ -1,9 +1,8 @@
 package com.zinoviev.bot.controller.impl;
 
-import com.google.gson.Gson;
 import com.zinoviev.bot.controller.BotDataController;
 import com.zinoviev.bot.message.handler.ResponseMessageBuilder;
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +20,7 @@ public class SimpleBotDataController implements BotDataController {
     private int this_port = 24001;
 
     //@Value("${db.service}")
-    private final String dbLink = "http://localhost:24002/api/data/userdata";
+    private final String dbLink = "http://localhost:24002/api/data/userData";
 
     private final ResponseMessageBuilder responseMessageBuilder;
 
@@ -32,23 +31,23 @@ public class SimpleBotDataController implements BotDataController {
     }
 
     @PostMapping("/orch/response")
-    public ResponseEntity<UpdateData> orchestratorResponse(@RequestBody UpdateData updateData) {
+    public ResponseEntity<UpdateDto> orchestratorResponse(@RequestBody UpdateDto updateDto) {
         System.out.println("---------------------------------------------------------------");
-        responseMessageBuilder.buildMessage(updateData);
+        responseMessageBuilder.buildMessage(updateDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public void sendUpdateDataToDB(UpdateData updateData) {
+    public void sendUpdateDataToDB(UpdateDto updateDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         try {
-            ResponseEntity<UpdateData> responseEntity = new RestTemplate().exchange(
+            ResponseEntity<UpdateDto> responseEntity = new RestTemplate().exchange(
                     dbLink,
                     HttpMethod.POST,
-                    new HttpEntity<>(updateData, headers),
-                    UpdateData.class
+                    new HttpEntity<>(updateDto, headers),
+                    UpdateDto.class
             );
             if (responseEntity.getStatusCode() != HttpStatus.OK) {
                 System.err.println("Ошибка при выполнении запроса. Статус код: " + responseEntity.getStatusCodeValue());

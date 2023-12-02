@@ -1,7 +1,7 @@
 package com.zinoviev.orchestrator.handler.impl;
 
 import com.zinoviev.entity.enums.SignInStatus;
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
 import com.zinoviev.orchestrator.handler.UpdateDataHandler;
 import com.zinoviev.orchestrator.service.SignUpService;
@@ -21,15 +21,16 @@ public class SimpleUpdateDataHandler implements UpdateDataHandler {
     }
 
     @Override
-    public void addRequest(UpdateData updateData) {
+    public void addRequest(UpdateDto updateDto) {
         System.out.println("add request :   is user logged in?");
-        if (updateData.getUserData().getSignInStatus() != SignInStatus.SIGN_UP_COMPLETE) {
-            new SignUpService(exchangeController).proceedSignUp(updateData);
+
+        if (updateDto.getUserDTO().getSignInStatus() != SignInStatus.SIGN_UP_COMPLETE) {
+            new SignUpService(exchangeController).proceedSignUp(updateDto);
             return;
         }
 
         System.out.println("add request :   user is logged in");
-        userRoleHandler.actionHandler(updateData);
+        userRoleHandler.actionHandler(updateDto);
     }
 
 

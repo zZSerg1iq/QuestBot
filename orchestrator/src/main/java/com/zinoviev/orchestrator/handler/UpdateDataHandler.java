@@ -1,10 +1,10 @@
 package com.zinoviev.orchestrator.handler;
 
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 
 
 public interface UpdateDataHandler {
 
-    void addRequest(UpdateData updateData);
+    void addRequest(UpdateDto updateDto);
 
 }

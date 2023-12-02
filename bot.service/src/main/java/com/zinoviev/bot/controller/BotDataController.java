@@ -1,18 +1,14 @@
 package com.zinoviev.bot.controller;
 
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 
 public interface BotDataController {
 
-    void sendUpdateDataToDB(UpdateData updateData);
+    void sendUpdateDataToDB(UpdateDto updateDto);
 
-
-    ResponseEntity<UpdateData> orchestratorResponse(@RequestBody UpdateData updateData);
+    ResponseEntity<UpdateDto> orchestratorResponse(@RequestBody UpdateDto updateDto);
 
 }

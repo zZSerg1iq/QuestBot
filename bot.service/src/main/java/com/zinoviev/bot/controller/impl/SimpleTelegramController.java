@@ -4,7 +4,7 @@ import com.zinoviev.bot.config.Config;
 import com.zinoviev.bot.controller.BotDataController;
 import com.zinoviev.bot.controller.TelegramController;
 import com.zinoviev.bot.mapper.UpdateDataMapper;
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -17,7 +17,6 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
@@ -55,15 +54,9 @@ public class SimpleTelegramController extends TelegramLongPollingBot implements 
 
     @Override
     public void onUpdateReceived(Update update) {
-        UpdateData updateData = updateDataMapper.mapUpdateToUpdateData(update);
-        botDataController.sendUpdateDataToDB(updateData);
-    /*    sendMessage( SendMessage.builder()
-                .chatId(update.getMessage().getChatId())
-                .text("1")
-                .replyMarkup(ReplyKeyboardRemove.builder().removeKeyboard(true).build())
-                .build());*/
-
-
+        UpdateDto updateDto = updateDataMapper.mapUpdateToUpdateData(update);
+        System.out.println("send update");
+        botDataController.sendUpdateDataToDB(updateDto);
         // log.debug(update.getMessage());
     }
 

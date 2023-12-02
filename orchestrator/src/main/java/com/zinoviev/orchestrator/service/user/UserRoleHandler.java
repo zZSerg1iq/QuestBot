@@ -4,18 +4,20 @@ package com.zinoviev.orchestrator.service.user;
 import com.zinoviev.entity.enums.DefaultBotMessages;
 import com.zinoviev.entity.enums.KeyboardType;
 import com.zinoviev.entity.enums.MessageType;
-import com.zinoviev.entity.model.UpdateData;
+import com.zinoviev.entity.dto.update.UpdateDto;
 import com.zinoviev.orchestrator.controller.DataExchangeController;
-import com.zinoviev.orchestrator.enums.ServiceNames;
+import com.zinoviev.orchestrator.enums.ServiceURL;
 import com.zinoviev.orchestrator.service.MessageBuilderService;
-import com.zinoviev.orchestrator.service.user.sub.AccountMenuHandler;
-import com.zinoviev.orchestrator.service.user.sub.HelpMenuHandler;
-import com.zinoviev.orchestrator.service.user.sub.QuestMenuHandler;
+import com.zinoviev.orchestrator.service.user.menu.service.AccountMenuHandler;
+import com.zinoviev.orchestrator.service.user.menu.service.HelpMenuHandler;
+import com.zinoviev.orchestrator.service.user.menu.service.QuestMenuHandler;
 import lombok.Data;
 
 
 @Data
 public class UserRoleHandler {
+
+
 
     private final String CANCEL = "ACTION_CANCEL";
 
@@ -27,53 +29,49 @@ public class UserRoleHandler {
         this.messageBuilderService = new MessageBuilderService();
     }
 
-    public void actionHandler(UpdateData updateData) {
-        if (updateData.getMessage().getCallbackData() != null) {
-            userCallBackQueryAction(updateData);
+    public void actionHandler(UpdateDto updateDto) {
+        if (updateDto.getMessageDto().getCallbackData() != null) {
+            userCallBackQueryAction(updateDto);
         } else {
-            userMessageAction(updateData);
+            userMessageAction(updateDto);
         }
     }
 
-    private void userMessageAction(UpdateData updateData) {
-        if (updateData.getMessage().getText().equalsIgnoreCase("аккаунт")) {
-            new AccountMenuHandler(exchangeController, messageBuilderService, updateData).showAccountMainMenu();
+    private void userMessageAction(UpdateDto updateDto) {
+        if (updateDto.getMessageDto().getText().equalsIgnoreCase("аккаунт")) {
+            new AccountMenuHandler(exchangeController, messageBuilderService, updateDto).showAccountMainMenu();
 
-        } else if (updateData.getMessage().getText().equalsIgnoreCase("квесты")) {
-            new QuestMenuHandler(exchangeController, messageBuilderService, updateData).showQuestMainMenu();
+        } else if (updateDto.getMessageDto().getText().equalsIgnoreCase("квесты")) {
+            new QuestMenuHandler(exchangeController, messageBuilderService, updateDto).showQuestMainMenu();
 
-        } else if (updateData.getMessage().getText().equalsIgnoreCase("справка")) {
-            new HelpMenuHandler(exchangeController, messageBuilderService, updateData).showHelpMainMenu();
+        } else if (updateDto.getMessageDto().getText().equalsIgnoreCase("справка")) {
+            new HelpMenuHandler(exchangeController, messageBuilderService, updateDto).showHelpMainMenu();
 
-        } else if (updateData.getMessage().getText().contains("play:")) {
-            playQuest(updateData);
-
+        } else if (updateDto.getMessageDto().getText().contains("play:")) {
+            playQuest(updateDto);
         } else {
-            unknownCommandMessage(updateData);
+            unknownCommandMessage(updateDto);
         }
     }
 
 
-    private void userCallBackQueryAction(UpdateData updateData) {
-        System.out.println(">>>>>>>>>>>>>>  "+updateData.getMessage().getCallbackData());
+    private void userCallBackQueryAction(UpdateDto updateDto) {
+        if (updateDto.getMessageDto().getCallbackData().startsWith("QUEST")) {
+            new QuestMenuHandler(exchangeController, messageBuilderService, updateDto).questMenuCallback();
 
-        if (updateData.getMessage().getCallbackData().startsWith("QUEST")) {
-            new QuestMenuHandler(exchangeController, messageBuilderService, updateData).questMenuCallback();
+        } else if (updateDto.getMessageDto().getCallbackData().contains("ACCOUNT")) {
+            new AccountMenuHandler(exchangeController, messageBuilderService, updateDto).accountMenuCallback();
 
-        } else if (updateData.getMessage().getCallbackData().contains("ACCOUNT")) {
-            new AccountMenuHandler(exchangeController, messageBuilderService, updateData).accountMenuCallback();
-
-        } else if (updateData.getMessage().getCallbackData().contains("HOW_TO")) {
-            new HelpMenuHandler(exchangeController, messageBuilderService, updateData).helpMenuCallback();
+        } else if (updateDto.getMessageDto().getCallbackData().contains("HOW_TO")) {
+            new HelpMenuHandler(exchangeController, messageBuilderService, updateDto).helpMenuCallback();
 
         } else
-            cancelAction(updateData);
+            cancelAction(updateDto);
     }
 
 
-    private void playQuest(UpdateData updateData) {
-        String[] tempValue = updateData.getMessage().getText().split(":");
-
+    private void playQuest(UpdateDto updateDto) {
+        String[] tempValue = updateDto.getMessageDto().getText().split(":");
 
         //if (runningQuestManager.isQuestAlreadyRunning(tempValue[1])) {
         //    questRolesOffer(tempValue[1]);
@@ -87,31 +85,31 @@ public class UserRoleHandler {
     }
 
 
-    public void unknownCommandMessage(UpdateData updateData) {
+    public void unknownCommandMessage(UpdateDto updateDto) {
         // переотравить заново клавиатуру и показать сообщение что команда неизвестна
         new MessageBuilderService()
-                .setText( updateData,updateData.getUserData().getAvatarName() + DefaultBotMessages.TEXT_COMMAND_UNKNOWN.getMessage())
-                .setMessageType(updateData, MessageType.MESSAGE)
-                .setKeyboardType(updateData, KeyboardType.REPLY_REMOVE);
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+                .setText(updateDto, updateDto.getUserDTO().getGameName() + DefaultBotMessages.TEXT_COMMAND_UNKNOWN.getMessage())
+                .setMessageType(updateDto, MessageType.MESSAGE)
+                .setKeyboardType(updateDto, KeyboardType.REPLY_REMOVE);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
 
         new MessageBuilderService()
-                .setText( updateData, DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage())
-                .setMessageType(updateData, MessageType.MESSAGE)
-                .setKeyboardType(updateData, KeyboardType.REPLY_ADD);
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+                .setText(updateDto, DefaultBotMessages.TEXT_COMMAND_SECOND_MESSAGE.getMessage())
+                .setMessageType(updateDto, MessageType.MESSAGE)
+                .setKeyboardType(updateDto, KeyboardType.REPLY_ADD);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
     }
 
 
 
 
-    private void cancelAction(UpdateData updateData) {
+    private void cancelAction(UpdateDto updateDto) {
         messageBuilderService
-                .setText(updateData, DefaultBotMessages.ACTION_CANCEL.getMessage())
-                .setKeyboardType(updateData, KeyboardType.NULL)
-                .setMessageType(updateData, MessageType.DELETE);
+                .setText(updateDto, DefaultBotMessages.ACTION_CANCEL.getMessage())
+                .setKeyboardType(updateDto, KeyboardType.NULL)
+                .setMessageType(updateDto, MessageType.DELETE);
 
-        exchangeController.sendDataTo(ServiceNames.BOT_SERVICE, updateData);
+        exchangeController.exchangeWith(ServiceURL.botService, updateDto);
     }
 
 
@@ -232,15 +230,7 @@ public class UserRoleHandler {
         botController.sendMessage(MessageTemplateService.getEditedMessageTemplate(callbackQuery, "- Отменено -"));
     }
 
-    public String getQuestLink(BotQuest quest) {
-        return cryptoToolService.linkOf(Math.abs(botUser.getTelegramId())) +
-                "." +
-                cryptoToolService.linkOf(Math.abs(botUser.getId())) +
-                "." +
-                cryptoToolService.linkOf(Math.abs(quest.getId())) +
-                "." +
-                cryptoToolService.linkOf(Math.abs(quest.getName().hashCode()));
-    }
+
 
     private List<BotQuest> getFakeQuests(int questCount) {
         List<BotQuest> quests = BotQuestTemplateGenerator.getQuestList(botUser.getTelegramId(), questCount);
