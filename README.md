@@ -5,11 +5,11 @@
 
 
 ## Проект включает следующие сервисы: 
--bot
--data
--entity
--orchestrator
--quest
+bot
+data
+entity
+orchestrator
+quest
 
 
 ## Взаимодействие: 
